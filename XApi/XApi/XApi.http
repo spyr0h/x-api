@@ -1,0 +1,6 @@
+@XApi_HostAddress = http://localhost:5128
+
+GET {{XApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
