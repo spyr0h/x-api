@@ -5,3 +5,10 @@
 /XApi/.vs/XApi
 /XApi/XApi/bin/Debug/net8.0
 /XApi/XApi/obj
+/XApi/.vs/ProjectEvaluation
+/XApi/API/bin/Debug/net8.0
+/XApi/API/obj
+/XApi/Core/obj
+/XApi/Adapters.Mysql/bin/Debug/net8.0
+/XApi/Adapters.Mysql/obj
+/XApi/Core/bin/Debug/net8.0
