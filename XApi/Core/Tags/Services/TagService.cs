@@ -6,11 +6,11 @@ namespace XApi.Core.Tags.Services;
 
 public class TagService(ITagProvider tagProvider) : ITagService
 {
-    public IList<Tag> Autocomplete(TagAutocomplete autocomplete)
+    public async Task<IList<Tag>> Autocomplete(TagAutocomplete autocomplete)
     {
         if (string.IsNullOrEmpty(autocomplete.Value)) return [];
 
-        var tags = tagProvider.ProvideAllTags();
+        var tags = await tagProvider.ProvideAllTags();
 
         return SearchAndSortByProximity(tags, autocomplete.Value!.ToLower()).ToList();
     }

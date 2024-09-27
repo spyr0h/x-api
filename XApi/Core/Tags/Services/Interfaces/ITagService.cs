@@ -5,5 +5,5 @@ namespace XApi.Core.Tags.Services.Interfaces;
 
 public interface ITagService
 {
-    public IList<Tag> Autocomplete(TagAutocomplete autocomplete);
+    public Task<IList<Tag>> Autocomplete(TagAutocomplete autocomplete);
 }

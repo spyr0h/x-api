@@ -1,4 +1,5 @@
-using API.Tags.DependencyInjection;
+using XApi.API.DependencyInjection;
+using XApi.API.Tags.DependencyInjection;
 using XApi.API.Tags.Endpoints;
 
 var builder = WebApplication.CreateBuilder(args);

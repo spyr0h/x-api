@@ -1,124 +1,35 @@
 ﻿using Core.Tags.Ports.Interfaces;
+using Dapper;
+using Mapster;
+using System.Data;
 using XApi.Core.Tags.Models;
+using MySql.Data.MySqlClient;
 
 namespace XApi.Adapters.Mysql.Tags.Adapters;
 
 public class TagProvider : ITagProvider
 {
-    // TEMPORARY
-    public IList<Tag> ProvideAllTags()
-        => new List<string>
-        {
-            "Mature",
-            "Teen (18+)",
-            "MILF",
-            "Black",
-            "Anal",
-            "Old/Young (18+)",
-            "Lesbian",
-            "Threesome",
-            "Japanese",
-            "Hentai",
-            "60FPS",
-            "Actors",
-            "German",
-            "Amateur",
-            "Verified Amateurs",
-            "Anime",
-            "Arab",
-            "Asian",
-            "Babysitter (18+)",
-            "BBW",
-            "Bisexual",
-            "Blonde",
-            "Bondage",
-            "Handjob",
-            "Brazilian",
-            "British",
-            "Brunette",
-            "Bukkake",
-            "Celebrity",
-            "Cuckold",
-            "Compilation",
-            "Korean",
-            "Cosplay",
-            "Verified Couples",
-            "Behind the Scenes",
-            "Fingering",
-            "Double Penetration",
-            "Funny",
-            "School (18+)",
-            "Cumshot",
-            "Internal Cumshot",
-            "Euro",
-            "Exclusive",
-            "College (18+)",
-            "Family Fantasy",
-            "Solo Female",
-            "Squirt",
-            "Tattooed Women",
-            "Party",
-            "Fetish",
-            "Fisting",
-            "French",
-            "Smoking",
-            "Gaming",
-            "Gangbang",
-            "Big Ass",
-            "Big Tits",
-            "Big Dick",
-            "Hardcore",
-            "Muscular Men",
-            "Indian",
-            "Interactive",
-            "Interracial",
-            "Italian",
-            "Role Play",
-            "Pretty Girl",
-            "Latina",
-            "Pussy Licking",
-            "Lesbian",
-            "Massage",
-            "Masturbation",
-            "Mature",
-            "Solo Male",
-            "Threesome",
-            "MILF",
-            "Verified Models",
-            "Music",
-            "Female Orgasm",
-            "Orgy",
-            "Parody",
-            "Small Tits",
-            "Feet",
-            "Blowjob",
-            "Podcast",
-            "POV",
-            "Popular with Women",
-            "Porn Star",
-            "HD Porn",
-            "Public",
-            "Reality",
-            "Virtual Reality",
-            "Retro",
-            "Romantic",
-            "Redhead",
-            "Russian",
-            "Sex Toys",
-            "Rough Sex",
-            "SFW",
-            "Anal",
-            "Subtitles",
-            "Strap On",
-            "Striptease",
-            "Czech",
-            "Teen (18+)",
-            "Transgender",
-            "Pissing",
-            "Described Video",
-            "Old/Young (18+)",
-            "Webcam"
-        }
-        .Select((cat, i) => new Tag { ID = i, Value = cat.ToLower() })
-        .ToList();
+    private readonly string _connectionString;
+
+    public TagProvider()
+    {
+        _connectionString = Environment.GetEnvironmentVariable("BDD_CONNECTION_STRING")
+            ?? throw new InvalidOperationException("La variable d'environnement 'BDD_CONNECTION_STRING' est manquante.");
+    }
+
+    private IDbConnection Connection => new MySqlConnection(_connectionString);
+
+    public async Task<IList<Tag>> ProvideAllTags()
+    {
+        using var dbConnection = Connection;
+        dbConnection.Open();
+
+        var query = "SELECT * FROM Tags";
+        
+        var tags = await dbConnection.QueryAsync<Models.Tag>(query);
+
+        return tags
+            .Select(tag => tag.Adapt<Tag>())
+            .ToList();
+    }
 }

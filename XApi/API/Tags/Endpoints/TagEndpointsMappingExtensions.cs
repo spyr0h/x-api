@@ -9,9 +9,9 @@ namespace XApi.API.Tags.Endpoints;
 public static class TagEndpointsMappingExtensions
 {
     public static void MapTagsEndpoints(this WebApplication webApplication)
-        => webApplication.MapPost("/api/tags/autocomplete", ([FromBody] TagAutocompleteDTO dto, ITagService tagService) =>
+        => webApplication.MapPost("/api/tags/autocomplete", async ([FromBody] TagAutocompleteDTO dto, ITagService tagService) =>
         {
-            var foundTags = tagService.Autocomplete(dto.Adapt<TagAutocomplete>());
+            var foundTags = await tagService.Autocomplete(dto.Adapt<TagAutocomplete>());
             return Results.Ok(new TagsDTO
             {
                 Tags = foundTags.Select(tag => tag.Adapt<TagDTO>()).ToList()

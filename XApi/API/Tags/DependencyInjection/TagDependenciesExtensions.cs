@@ -3,7 +3,7 @@ using XApi.Adapters.Mysql.Tags.Adapters;
 using XApi.Core.Tags.Services;
 using XApi.Core.Tags.Services.Interfaces;
 
-namespace API.Tags.DependencyInjection;
+namespace XApi.API.Tags.DependencyInjection;
 
 public static class TagDependenciesExtensions
 {

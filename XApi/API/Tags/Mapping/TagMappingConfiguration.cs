@@ -2,7 +2,7 @@
 using XApi.API.Tags.DTO;
 using XApi.Core.Tags.Models;
 
-namespace API.Tags.Mapping;
+namespace XApi.API.Tags.Mapping;
 
 public class TagMappingConfiguration : IRegister
 {

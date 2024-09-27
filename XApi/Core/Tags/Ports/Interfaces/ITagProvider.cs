@@ -4,5 +4,5 @@ namespace Core.Tags.Ports.Interfaces;
 
 public interface ITagProvider
 {
-    IList<Tag> ProvideAllTags();
+    Task<IList<Tag>> ProvideAllTags();
 }
