@@ -15,14 +15,14 @@ public class PornstarProvider : IPornstarProvider
     private readonly string _cacheKey = "AllPornstars";
     private readonly TimeSpan _cacheDuration = TimeSpan.FromDays(1);
 
+    private IDbConnection Connection => new MySqlConnection(_connectionString);
+
     public PornstarProvider(IMemoryCache cache)
     {
         _connectionString = Environment.GetEnvironmentVariable("BDD_CONNECTION_STRING")
             ?? throw new InvalidOperationException("La variable d'environnement 'BDD_CONNECTION_STRING' est manquante.");
         _cache = cache;
     }
-
-    private IDbConnection Connection => new MySqlConnection(_connectionString);
 
     public async Task<IList<Pornstar>> ProvideAllPornstars()
     {
