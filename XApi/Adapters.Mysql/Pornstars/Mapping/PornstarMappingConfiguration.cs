@@ -1,0 +1,13 @@
+﻿using Mapster;
+
+namespace XApi.Adapters.Mysql.Pornstars.Mapping;
+
+public class PornstarMappingConfiguration : IRegister
+{
+    public void Register(TypeAdapterConfig config)
+    {
+        config.NewConfig<Models.Pornstar, Core.Pornstars.Models.Pornstar>()
+            .Map(dest => dest.ID, src => src.ID)
+            .Map(dest => dest.Value, src => src.Value);
+    }
+}

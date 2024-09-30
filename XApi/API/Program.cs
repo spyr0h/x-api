@@ -1,4 +1,6 @@
 using XApi.API.DependencyInjection;
+using XApi.API.Pornstars.DependencyInjection;
+using XApi.API.Pornstars.Endpoints;
 using XApi.API.Tags.DependencyInjection;
 using XApi.API.Tags.Endpoints;
 
@@ -14,6 +16,7 @@ builder.Services.AddSwaggerGen(options =>
 builder.Services.AddMapster();
 builder.Services.AddMemoryCache();
 builder.Services.AddTagsDependencies();
+builder.Services.AddPornstarsDependencies();
 #endregion
 
 var app = builder.Build();
@@ -27,7 +30,8 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 #region Custom endpoints registration
-app.MapTagsEndpoints();
+app.MapTagEndpoints();
+app.MapPornstarEndpoints();
 #endregion
 
 app.Run();

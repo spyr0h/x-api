@@ -1,6 +1,7 @@
 ﻿using Mapster;
 using MapsterMapper;
 using System.Reflection;
+using XApi.Adapters.Mysql.Pornstars.Adapters;
 using XApi.Adapters.Mysql.Tags.Adapters;
 
 namespace XApi.API.DependencyInjection;
@@ -15,7 +16,8 @@ public static class MapsterDependenciesExtensions
 
         var assemblies = AppDomain.CurrentDomain.GetAssemblies();
 
-        var toImport = typeof(TagProvider); // to scan Adapters.Mysql
+        var tagProviderToImport = typeof(TagProvider);
+        var pornstarProviderToImport = typeof(PornstarProvider);
 
         assemblies.ToList().ForEach(assembly => config.Scan(assembly));
 

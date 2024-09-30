@@ -1,10 +1,10 @@
-﻿using Core.Tags.Ports.Interfaces;
-using Dapper;
+﻿using Dapper;
 using Mapster;
 using System.Data;
 using XApi.Core.Tags.Models;
 using MySql.Data.MySqlClient;
 using Microsoft.Extensions.Caching.Memory;
+using XApi.Core.Tags.Ports.Interfaces;
 
 namespace XApi.Adapters.Mysql.Tags.Adapters;
 

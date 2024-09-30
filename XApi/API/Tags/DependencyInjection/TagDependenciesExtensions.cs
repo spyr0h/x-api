@@ -1,7 +1,6 @@
-﻿using Core.Tags.Ports.Interfaces;
-using XApi.Adapters.Mysql.Tags.Adapters;
+﻿using XApi.Adapters.Mysql.Tags.Adapters;
+using XApi.Core.Tags.Ports.Interfaces;
 using XApi.Core.Tags.Services;
-using XApi.Core.Tags.Services.Interfaces;
 
 namespace XApi.API.Tags.DependencyInjection;
 

@@ -1,6 +1,5 @@
-﻿using Core.Tags.Ports.Interfaces;
-using XApi.Core.Tags.Models;
-using XApi.Core.Tags.Services.Interfaces;
+﻿using XApi.Core.Tags.Models;
+using XApi.Core.Tags.Ports.Interfaces;
 
 namespace XApi.Core.Tags.Services;
 
