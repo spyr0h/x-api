@@ -12,6 +12,7 @@ builder.Services.AddSwaggerGen(options =>
 
 #region Custom dependencies DI
 builder.Services.AddMapster();
+builder.Services.AddMemoryCache();
 builder.Services.AddTagsDependencies();
 #endregion
 
