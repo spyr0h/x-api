@@ -1,4 +1,6 @@
-﻿using XApi.Core.Pornstars.Models;
+﻿using XApi.Core.Links.Models;
+using XApi.Core.Pictures.Models;
+using XApi.Core.Pornstars.Models;
 using XApi.Core.Tags.Models;
 
 namespace XApi.Core.Videos.Models;
@@ -12,4 +14,6 @@ public record Video
     public int? Year { get; set; }
     public List<Tag> Tags { get; set; } = [];
     public List<Pornstar> Pornstars { get; set; } = [];
+    public List<Link> Links { get; set; } = [];
+    public List<Picture> Pictures { get; set; } = [];
 }

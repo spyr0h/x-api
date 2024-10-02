@@ -1,4 +1,6 @@
 ﻿using Mapster;
+using XApi.API.Links.DTO;
+using XApi.API.Pictures.DTO;
 using XApi.API.Pornstars.DTO;
 using XApi.API.Tags.DTO;
 using XApi.API.Videos.DTO;
@@ -19,7 +21,9 @@ public class VideoMappingConfiguration : IRegister
                 Duration = video.Duration,
                 Year = video.Year,
                 Tags = video.Tags.Select(tag => tag.Adapt<TagDTO>()).ToList(),
-                Pornstars = video.Pornstars.Select(pornstar => pornstar.Adapt<PornstarDTO>()).ToList()
+                Pornstars = video.Pornstars.Select(pornstar => pornstar.Adapt<PornstarDTO>()).ToList(),
+                Links = video.Links.Select(link => link.Adapt<LinkDTO>()).ToList(),
+                Pictures = video.Pictures.Select(picture => picture.Adapt<PictureDTO>()).ToList()
             });
     }
 }

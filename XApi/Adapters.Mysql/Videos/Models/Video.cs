@@ -7,6 +7,8 @@ public class Video
     public string? Description { get; set; }
     public TimeSpan? Duration { get; set; }
     public int? Year { get; set; }
-    public List<VideoTag> Tags { get; set; } = [];
-    public List<VideoPornstar> Pornstars { get; set; } = [];
+    public string Tags { get; set; }
+    public string Pornstars { get; set; } 
+    public string Links { get; set; }
+    public string Pictures { get; set; }
 }
