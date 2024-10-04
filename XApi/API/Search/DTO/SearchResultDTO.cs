@@ -4,5 +4,6 @@ namespace XApi.API.Search.DTO;
 
 public record SearchResultDTO
 {
+    public int Count { get; set; }
     public List<VideoDTO> Videos { get; set; } = [];
 }

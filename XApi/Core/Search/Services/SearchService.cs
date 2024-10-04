@@ -5,6 +5,9 @@ namespace XApi.Core.Search.Services;
 
 public class SearchService(ISearchProvider searchProvider) : ISearchService
 {
-    public Task<SearchResult> SearchVideosByCriteria(SearchCriteria searchCriteria)
-        => searchProvider.SearchVideosByCriteria(searchCriteria);
+    public async Task<SearchResult> SearchVideosByCriteria(SearchCriteria searchCriteria)
+    {
+        var result = await searchProvider.SearchVideosByCriteria(searchCriteria);
+        return result with { Count = result.Videos.Count() };
+    }
 }

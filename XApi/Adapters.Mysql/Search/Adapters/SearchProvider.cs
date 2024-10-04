@@ -1,14 +1,9 @@
-﻿using Dapper;
-using Mapster;
-using MySql.Data.MySqlClient;
+﻿using MySql.Data.MySqlClient;
 using System.Data;
-using System.Data.SqlClient;
-using XApi.Adapters.Mysql.Videos.Models;
 using XApi.Core.Links.Enums;
 using XApi.Core.Pictures.Models;
 using XApi.Core.Search.Models;
 using XApi.Core.Search.Ports.Interfaces;
-using XApi.Core.Videos.Models;
 
 namespace XApi.Adapters.Mysql.Search.Adapters;
 
@@ -66,7 +61,7 @@ public class SearchProvider : ISearchProvider
                     HAVING COUNT(DISTINCT PornstarsID) = {5}
                 )
             )
-AND v.ID = 69
+
         GROUP BY 
             v.ID, v.Title, v.Description, v.Duration, v.Year, v.CreatedDate, v.ModifiedDate
         ORDER BY
@@ -74,11 +69,8 @@ AND v.ID = 69
         LIMIT {7} OFFSET {8}
     ";
 
-    private readonly int _defaultLimit = 10;
-    private readonly int _defaultOffset = 0;
     private readonly string _defaultOrder = "DESC";
             
-
     private MySqlConnection Connection => new MySqlConnection(_connectionString);
 
     public SearchProvider()
@@ -89,18 +81,22 @@ AND v.ID = 69
 
     public async Task<SearchResult> SearchVideosByCriteria(SearchCriteria searchCriteria)
     {
+        if (searchCriteria == null) throw new Exception("The searchCriteria should not be null.");
+
         using MySqlConnection dbConnection = Connection;
         dbConnection.Open();
 
-        var tags = (searchCriteria?.TagsIDS?.Any() ?? false) ? searchCriteria.TagsIDS : [-1];
-        var tagsFalse = (searchCriteria?.TagsIDS ?? []).Any() ? "" : "1=1 OR ";
+        var tags = (searchCriteria.TagsIDS?.Any() ?? false) ? searchCriteria.TagsIDS : [-1];
+        var tagsFalse = (searchCriteria.TagsIDS ?? []).Any() ? "" : "1=1 OR ";
         var tagsIDs = $"({string.Join(",", tags)})";
-        var tagsCount = searchCriteria?.TagsIDS?.Count() ?? 0;
+        var tagsCount = searchCriteria.TagsIDS?.Count() ?? 0;
 
-        var pornstars = (searchCriteria?.PornstarsIDS?.Any() ?? false) ? searchCriteria.PornstarsIDS : [-1];
-        var pornstarsFalse = (searchCriteria?.PornstarsIDS ?? []).Any() ? "" : "1=1 OR ";
+        var pornstars = (searchCriteria.PornstarsIDS?.Any() ?? false) ? searchCriteria.PornstarsIDS : [-1];
+        var pornstarsFalse = (searchCriteria.PornstarsIDS ?? []).Any() ? "" : "1=1 OR ";
         var pornstarsIDs = $"({string.Join(",", pornstars)})";
-        var pornstarsCount = searchCriteria?.PornstarsIDS?.Count() ?? 0;
+        var pornstarsCount = searchCriteria.PornstarsIDS?.Count() ?? 0;
+
+        var offset = searchCriteria.Paging.ResultsPerPage * (searchCriteria.Paging.PageIndex - 1);
 
         var finalQuery = string.Format(
             _query, 
@@ -111,8 +107,8 @@ AND v.ID = 69
             pornstarsIDs, 
             pornstarsCount,
             _defaultOrder,
-            _defaultLimit,
-            _defaultOffset);
+            searchCriteria.Paging.ResultsPerPage,
+            offset);
 
         List<Videos.Models.Video> videos = [];
 
