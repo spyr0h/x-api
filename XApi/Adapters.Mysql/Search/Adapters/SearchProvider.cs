@@ -86,15 +86,15 @@ public class SearchProvider : ISearchProvider
         using MySqlConnection dbConnection = Connection;
         dbConnection.Open();
 
-        var tags = (searchCriteria.TagsIDS?.Any() ?? false) ? searchCriteria.TagsIDS : [-1];
-        var tagsFalse = (searchCriteria.TagsIDS ?? []).Any() ? "" : "1=1 OR ";
+        var tags = (searchCriteria.Tags?.Any() ?? false) ? searchCriteria.Tags.Select(t => t.ID) : [-1];
+        var tagsFalse = (searchCriteria.Tags ?? []).Any() ? "" : "1=1 OR ";
         var tagsIDs = $"({string.Join(",", tags)})";
-        var tagsCount = searchCriteria.TagsIDS?.Count() ?? 0;
+        var tagsCount = searchCriteria.Tags?.Count() ?? 0;
 
-        var pornstars = (searchCriteria.PornstarsIDS?.Any() ?? false) ? searchCriteria.PornstarsIDS : [-1];
-        var pornstarsFalse = (searchCriteria.PornstarsIDS ?? []).Any() ? "" : "1=1 OR ";
+        var pornstars = (searchCriteria.Pornstars?.Any() ?? false) ? searchCriteria.Pornstars.Select(p => p.ID) : [-1];
+        var pornstarsFalse = (searchCriteria.Pornstars ?? []).Any() ? "" : "1=1 OR ";
         var pornstarsIDs = $"({string.Join(",", pornstars)})";
-        var pornstarsCount = searchCriteria.PornstarsIDS?.Count() ?? 0;
+        var pornstarsCount = searchCriteria.Pornstars?.Count() ?? 0;
 
         var offset = searchCriteria.Paging.ResultsPerPage * (searchCriteria.Paging.PageIndex - 1);
 

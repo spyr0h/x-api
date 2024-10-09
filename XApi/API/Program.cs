@@ -1,4 +1,5 @@
 using XApi.API.DependencyInjection;
+using XApi.API.Page.Endpoints;
 using XApi.API.Pornstars.DependencyInjection;
 using XApi.API.Pornstars.Endpoints;
 using XApi.API.Search.DependencyInjection;
@@ -20,6 +21,7 @@ builder.Services.AddMemoryCache();
 builder.Services.AddTagsDependencies();
 builder.Services.AddPornstarsDependencies();
 builder.Services.AddSearchDependencies();
+builder.Services.AddSeoDependencies();
 #endregion
 
 var app = builder.Build();
@@ -36,6 +38,7 @@ app.UseHttpsRedirection();
 app.MapTagEndpoints();
 app.MapPornstarEndpoints();
 app.MapSearchEndpoints();
+app.MapPageEndpoints();
 #endregion
 
 app.Run();

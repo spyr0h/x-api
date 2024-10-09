@@ -9,14 +9,6 @@ public class SearchMappingConfiguration : IRegister
 {
     public void Register(TypeAdapterConfig config)
     {
-        config.NewConfig<SearchCriteriaDTO, SearchCriteria>()
-            .MapWith(searchCriteria => new SearchCriteria
-            {
-                TagsIDS = searchCriteria.TagsIDS,
-                PornstarsIDS = searchCriteria.PornstarsIDS,
-                Paging = searchCriteria.Paging.Adapt<SearchPaging>()
-            });
-
         config.NewConfig<SearchResult, SearchResultDTO>()
             .MapWith(searchResult => new SearchResultDTO
             {

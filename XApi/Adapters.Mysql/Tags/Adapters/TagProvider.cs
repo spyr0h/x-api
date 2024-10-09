@@ -41,4 +41,14 @@ public class TagProvider : ITagProvider
 
         return cachedTags!;
     }
+
+    public async Task<IList<Tag>> ProvideTagsForIds(int[] ids)
+    {
+        var tags = await ProvideAllTags();
+        return ids
+            .Select(id => tags.FirstOrDefault(tag => tag.ID == id))
+            .Where(tag => tag != null)
+            .Cast<Tag>()
+            .ToList();
+    }
 }

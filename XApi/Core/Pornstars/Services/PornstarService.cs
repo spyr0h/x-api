@@ -14,6 +14,9 @@ public class PornstarService(IPornstarProvider pornstarProvider) : IPornstarServ
         return SearchAndSortByProximity(pornstars, autocomplete.Value!.ToLower()).ToList();
     }
 
+    public Task<IList<Pornstar>> ProvidePornstarsForIds(int[] ids)
+        => pornstarProvider.ProvidePornstarsForIds(ids);
+
     private IEnumerable<Pornstar> SearchAndSortByProximity(IEnumerable<Pornstar> pornstars, string fragment)
         => pornstars
             .Where(pornstar => !string.IsNullOrEmpty(pornstar.Value))

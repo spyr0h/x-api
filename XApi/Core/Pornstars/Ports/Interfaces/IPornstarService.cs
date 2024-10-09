@@ -4,5 +4,6 @@ namespace XApi.Core.Pornstars.Ports.Interfaces;
 
 public interface IPornstarService
 {
-    public Task<IList<Pornstar>> Autocomplete(PornstarAutocomplete autocomplete);
+    Task<IList<Pornstar>> Autocomplete(PornstarAutocomplete autocomplete);
+    Task<IList<Pornstar>> ProvidePornstarsForIds(int[] ids);
 }

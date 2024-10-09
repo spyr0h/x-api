@@ -41,4 +41,14 @@ public class PornstarProvider : IPornstarProvider
 
         return cachedPornstars!;
     }
+
+    public async Task<IList<Pornstar>> ProvidePornstarsForIds(int[] ids)
+    {
+        var tags = await ProvideAllPornstars();
+        return ids
+            .Select(id => tags.FirstOrDefault(tag => tag.ID == id))
+            .Where(tag => tag != null)
+            .Cast<Pornstar>()
+            .ToList();
+    }
 }
