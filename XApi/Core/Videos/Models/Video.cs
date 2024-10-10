@@ -14,6 +14,6 @@ public record Video
     public int? Year { get; set; }
     public List<Tag> Tags { get; set; } = [];
     public List<Pornstar> Pornstars { get; set; } = [];
-    public List<Link> Links { get; set; } = [];
+    public List<HostLink> Links { get; set; } = [];
     public List<Picture> Pictures { get; set; } = [];
 }

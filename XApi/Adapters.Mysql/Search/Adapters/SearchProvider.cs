@@ -173,7 +173,7 @@ public class SearchProvider : ISearchProvider
                     .Select(link =>
                     {
                         var splittedLink = link.Split('µ');
-                        return new Core.Links.Models.Link
+                        return new Core.Links.Models.HostLink
                         {
                             Url = GetStrValue(splittedLink[0]),
                             Size = GetDoubleValue(splittedLink[1]),

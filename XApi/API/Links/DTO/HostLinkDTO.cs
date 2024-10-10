@@ -3,7 +3,7 @@ using Host = XApi.Core.Links.Enums.Host;
 
 namespace XApi.API.Links.DTO;
 
-public class LinkDTO
+public class HostLinkDTO
 {
     public string? Url { get; set; }
     public double? Size { get; set; }

@@ -14,6 +14,6 @@ public record VideoDTO
     public int? Year { get; set; }
     public List<TagDTO> Tags { get; set; } = [];
     public List<PornstarDTO> Pornstars { get; set; } = [];
-    public List<LinkDTO> Links { get; set; } = [];
+    public List<HostLinkDTO> Links { get; set; } = [];
     public List<PictureDTO> Pictures { get; set; } = [];
 }

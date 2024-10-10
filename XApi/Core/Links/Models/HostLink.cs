@@ -2,7 +2,7 @@
 
 namespace XApi.Core.Links.Models;
 
-public record Link
+public record HostLink
 {
     public string? Url { get; set; }
     public double? Size { get; set; }

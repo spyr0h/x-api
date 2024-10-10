@@ -1,5 +1,6 @@
 using API.Paging.DependencyInjection;
 using XApi.API.DependencyInjection;
+using XApi.API.Linkbox.DependencyInjection;
 using XApi.API.Page.Endpoints;
 using XApi.API.Pornstars.DependencyInjection;
 using XApi.API.Pornstars.Endpoints;
@@ -24,6 +25,7 @@ builder.Services.AddPornstarsDependencies();
 builder.Services.AddSearchDependencies();
 builder.Services.AddSeoDependencies();
 builder.Services.AddPagingsDependencies();
+builder.Services.AddLinkboxesDependencies();
 #endregion
 
 var app = builder.Build();

@@ -1,10 +1,12 @@
 ﻿using Mapster;
 using Microsoft.AspNetCore.Mvc;
+using XApi.API.Linkbox.DTO;
 using XApi.API.Page.DTO;
 using XApi.API.Paging.DTO;
 using XApi.API.Search.Builder.Interfaces;
 using XApi.API.Search.DTO;
 using XApi.API.Seo.DTO;
+using XApi.Core.Linkbox.Ports.Interfaces;
 using XApi.Core.Paging.Ports.Interfaces;
 using XApi.Core.Search.Ports.Interfaces;
 using XApi.Core.Seo.Ports.Interfaces;
@@ -19,17 +21,21 @@ public static class PageEndpointsMappingExtensions
             ISearchService searchService,
             ISearchCriteriaBuilder searchCriteriaBuilder,
             IPagingService pagingService,
-            ISeoService seoService) =>
+            ISeoService seoService,
+            ILinkboxService linkboxService) =>
         {
             var searchCriteria = await searchCriteriaBuilder.BuildFrom(dto.SearchCriteriaDTO);
             var searchResult = await searchService.SearchVideosByCriteria(searchCriteria);
             var searchPaging = await pagingService.CalculatePagingFromSearchData(searchCriteria, searchResult);
             var seoData = seoService.ProvideSeoData(searchCriteria);
+            var linkboxes = linkboxService.ProvideLinkboxes(searchCriteria);
+
             return Results.Ok(new PageResultDTO
             {
                 SearchResult = searchResult.Adapt<SearchResultDTO>(),
                 SeoData = seoData.Adapt<SeoDataDTO>(),
-                SearchPaging = searchPaging.Adapt<SearchPagingDTO>()
+                SearchPaging = searchPaging.Adapt<SearchPagingDTO>(),
+                Linkboxes = linkboxes.Adapt<LinkboxesDTO>()
             });
         })
         .WithName("criteria-page")

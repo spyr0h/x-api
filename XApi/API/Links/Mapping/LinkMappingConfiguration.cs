@@ -8,7 +8,7 @@ public class LinkMappingConfiguration : IRegister
 {
     public void Register(TypeAdapterConfig config)
     {
-        config.NewConfig<Link, LinkDTO>()
+        config.NewConfig<HostLink, HostLinkDTO>()
             .Map(dest => dest.Url, src => src.Url)
             .Map(dest => dest.Size, src => src.Size)
             .Map(dest => dest.Host, src => src.Host)

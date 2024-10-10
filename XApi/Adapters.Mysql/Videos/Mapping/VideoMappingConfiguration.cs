@@ -23,7 +23,7 @@ public class VideoMappingConfiguration : IRegister
                 Year = video.Year,
                 Tags = video.Tags.Select(tag => tag.Adapt<Tag>()).ToList(),
                 Pornstars = video.Pornstars.Select(pornstar => pornstar.Adapt<Pornstar>()).ToList(),
-                Links = video.Links.Select(link => link.Adapt<Link>()).ToList(),
+                Links = video.Links.Select(link => link.Adapt<HostLink>()).ToList(),
                 Pictures = video.Pictures.Select(picture => picture.Adapt<Picture>()).ToList(),
             });
     }
