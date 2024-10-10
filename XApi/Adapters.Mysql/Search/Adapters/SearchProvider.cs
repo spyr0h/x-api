@@ -69,6 +69,47 @@ public class SearchProvider : ISearchProvider
         LIMIT {7} OFFSET {8}
     ";
 
+    private readonly string _countQuery = @"
+        SELECT 
+            COUNT(DISTINCT v.ID) as COUNT
+        FROM
+            Videos v
+        LEFT JOIN
+            TagVideo tv ON v.ID = tv.VideosID
+        LEFT JOIN
+            Tags t ON tv.TagsID = t.ID
+        LEFT JOIN
+            PornstarVideo pv ON v.ID = pv.VideosID
+        LEFT JOIN
+            Pornstars p ON pv.PornstarsID = p.ID
+        LEFT JOIN
+            HostLinks hl ON v.ID = hl.VideoId
+        LEFT JOIN
+            Pictures pc ON v.ID = pc.VideoId
+        WHERE 
+            (
+                {0}
+                v.ID IN (
+                    SELECT VideosID 
+                    FROM TagVideo 
+                    WHERE TagsID IN {1}
+                    GROUP BY VideosID 
+                    HAVING COUNT(DISTINCT TagsID) = {2}
+                )
+            )
+        AND 
+            (
+                {3}
+                v.ID IN (
+                    SELECT VideosID 
+                    FROM PornstarVideo 
+                    WHERE PornstarsID IN {4}
+                    GROUP BY VideosID 
+                    HAVING COUNT(DISTINCT PornstarsID) = {5}
+                )
+            )
+    ";
+
     private readonly string _defaultOrder = "DESC";
             
     private MySqlConnection Connection => new MySqlConnection(_connectionString);
@@ -110,7 +151,17 @@ public class SearchProvider : ISearchProvider
             searchCriteria.Paging.ResultsPerPage,
             offset);
 
+        var finalCountQuery = string.Format(
+            _countQuery,
+            tagsFalse,
+            tagsIDs,
+            tagsCount,
+            pornstarsFalse,
+            pornstarsIDs,
+            pornstarsCount);
+
         List<Videos.Models.Video> videos = [];
+        int globalCount = -1;
 
         using (MySqlCommand command = new(finalQuery, dbConnection))
         {
@@ -132,6 +183,13 @@ public class SearchProvider : ISearchProvider
 
                 videos.Add(video);
             }
+        }
+
+        using (MySqlCommand command = new(finalCountQuery, dbConnection))
+        {
+            using MySqlDataReader reader = command.ExecuteReader();
+            reader.Read();
+            globalCount = reader.GetInt32("COUNT");
         }
 
         var convertedVideos = videos.Select(video => {
@@ -208,6 +266,8 @@ public class SearchProvider : ISearchProvider
 
         return new SearchResult
         {
+            GlobalCount = globalCount,
+            Count = convertedVideos.Count(),
             Videos = convertedVideos.ToList()
         };
     }

@@ -10,20 +10,20 @@ public class PagingService(IPageLinkProvider pageLinkProvider) : IPagingService
     public async Task<SearchPaging> CalculatePagingFromSearchData(SearchCriteria searchCriteria, SearchResult searchResult)
     {
         int actualPage = searchCriteria.Paging.PageIndex;
-        int pageNumber = (int)Math.Ceiling((double)searchResult.Count / searchCriteria.Paging.ResultsPerPage);
+        int maxPage = (int)Math.Ceiling((double)searchResult.GlobalCount / searchCriteria.Paging.ResultsPerPage);
 
         var firstPageCriteria = actualPage == 1
-            ? searchCriteria
+            ? null
             : searchCriteria with
             {
                 Paging = searchCriteria.Paging with { PageIndex = 1 }
             };
 
-        var lastPageCriteria = actualPage == pageNumber
-            ? searchCriteria
+        var lastPageCriteria = actualPage == maxPage
+            ? null
             : searchCriteria with
             {
-                Paging = searchCriteria.Paging with { PageIndex = pageNumber }
+                Paging = searchCriteria.Paging with { PageIndex = maxPage }
             };
 
         var previousPage = actualPage == 1
@@ -33,15 +33,14 @@ public class PagingService(IPageLinkProvider pageLinkProvider) : IPagingService
                 Paging = searchCriteria.Paging with { PageIndex = actualPage - 1 }
             };
 
-        var nextPage = actualPage == pageNumber
+        var nextPage = actualPage == maxPage
             ? null
             : searchCriteria with
             {
                 Paging = searchCriteria.Paging with { PageIndex = actualPage + 1 }
             };
 
-        var pages = Enumerable
-            .Range(actualPage + 1, 10)
+        var pages = GetPages(actualPage, maxPage)
             .ToArray()
             .Select(page => searchCriteria with
             {
@@ -72,5 +71,15 @@ public class PagingService(IPageLinkProvider pageLinkProvider) : IPagingService
             Url = pageUrl,
             Number = searchCriteria.Paging.PageIndex
         };
+    }
+
+    public int[] GetPages(int actualPage, int maxPage)
+    {
+        if (actualPage >= maxPage)
+            return [];
+
+        int count = Math.Min(10, maxPage - actualPage - 1);
+
+        return Enumerable.Range(actualPage + 1, count).ToArray();
     }
 }

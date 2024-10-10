@@ -12,6 +12,7 @@ public class SearchMappingConfiguration : IRegister
         config.NewConfig<SearchResult, SearchResultDTO>()
             .MapWith(searchResult => new SearchResultDTO
             {
+                GlobalCount = searchResult.GlobalCount,
                 Count = searchResult.Count,
                 Videos = searchResult.Videos.Select(video => video.Adapt<VideoDTO>()).ToList()
             });

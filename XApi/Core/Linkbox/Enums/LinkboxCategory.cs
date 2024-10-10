@@ -2,6 +2,7 @@
 
 public enum LinkboxCategory
 {
-    CategoriesLinkBox = 0,
-    TagsLinkBox = 1,
+    CategoriesLinkbox = 0,
+    TagsLinkbox = 1,
+    PornstarsLinkbox = 2,
 }
