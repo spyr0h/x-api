@@ -1,3 +1,4 @@
+using API.Paging.DependencyInjection;
 using XApi.API.DependencyInjection;
 using XApi.API.Page.Endpoints;
 using XApi.API.Pornstars.DependencyInjection;
@@ -22,6 +23,7 @@ builder.Services.AddTagsDependencies();
 builder.Services.AddPornstarsDependencies();
 builder.Services.AddSearchDependencies();
 builder.Services.AddSeoDependencies();
+builder.Services.AddPagingsDependencies();
 #endregion
 
 var app = builder.Build();

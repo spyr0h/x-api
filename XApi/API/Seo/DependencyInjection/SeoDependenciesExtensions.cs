@@ -1,7 +1,7 @@
 ﻿using XApi.Core.Seo.Builders;
 using XApi.Core.Seo.Builders.Interfaces;
+using XApi.Core.Seo.Ports.Interfaces;
 using XApi.Core.Seo.Services;
-using XApi.Core.Seo.Services.Interfaces;
 
 namespace XApi.API.Pornstars.DependencyInjection;
 

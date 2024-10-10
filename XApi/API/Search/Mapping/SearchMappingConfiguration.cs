@@ -16,7 +16,7 @@ public class SearchMappingConfiguration : IRegister
                 Videos = searchResult.Videos.Select(video => video.Adapt<VideoDTO>()).ToList()
             });
 
-        config.NewConfig<SearchPagingDTO, SearchPaging>()
+        config.NewConfig<SearchPagingSpecsDTO, SearchPagingSpecs>()
             .Map(dest => dest.PageIndex, src => src.PageIndex)
             .Map(dest => dest.ResultsPerPage, src => src.ResultsPerPage);
     }

@@ -23,7 +23,7 @@ public class SearchCriteriaBuilder(ITagService tagService, IPornstarService porn
         {
             Tags = [.. tags],
             Pornstars = [.. pornstars],
-            Paging = searchCriteriaDTO.Paging.Adapt<SearchPaging>()
+            Paging = searchCriteriaDTO.Paging.Adapt<SearchPagingSpecs>()
         };
     }
 }

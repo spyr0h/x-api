@@ -7,5 +7,5 @@ public record SearchCriteria
 {
     public List<Tag> Tags { get; set; } = [];
     public List<Pornstar> Pornstars { get; set; } = [];
-    public SearchPaging Paging { get; set; } = new() { PageIndex = 1 };
+    public SearchPagingSpecs Paging { get; set; } = new() { PageIndex = 1 };
 }
