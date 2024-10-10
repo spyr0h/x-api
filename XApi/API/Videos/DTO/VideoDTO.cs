@@ -1,4 +1,4 @@
-﻿using XApi.API.Links.DTO;
+﻿using XApi.API.Host.DTO;
 using XApi.API.Pictures.DTO;
 using XApi.API.Pornstars.DTO;
 using XApi.API.Tags.DTO;

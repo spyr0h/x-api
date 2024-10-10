@@ -1,4 +1,4 @@
-﻿namespace XApi.Core.Links.Enums;
+﻿namespace XApi.Core.Host.Enums;
 
 public enum Resolution
 {

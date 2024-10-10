@@ -1,12 +1,13 @@
-﻿using XApi.Core.Links.Enums;
+﻿using XApi.Core.Host.Enums;
+using LinkHost = XApi.Core.Host.Enums.Host;
 
-namespace XApi.Core.Links.Models;
+namespace XApi.API.Host.DTO;
 
-public record HostLink
+public class HostLinkDTO
 {
     public string? Url { get; set; }
     public double? Size { get; set; }
-    public Host? Host { get; set; }
+    public LinkHost? Host { get; set; }
     public Resolution? Resolution { get; set; }
     public Format? Format { get; set; }
     public int? Part { get; set; }

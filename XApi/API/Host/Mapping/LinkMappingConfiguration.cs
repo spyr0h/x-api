@@ -1,8 +1,8 @@
 ﻿using Mapster;
-using XApi.API.Links.DTO;
-using XApi.Core.Links.Models;
+using XApi.API.Host.DTO;
+using XApi.Core.Host.Models;
 
-namespace XApi.API.Links.Mapping;
+namespace XApi.API.Host.Mapping;
 
 public class LinkMappingConfiguration : IRegister
 {

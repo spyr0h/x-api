@@ -1,6 +1,4 @@
-﻿using XApi.Core.Links.Models;
-
-namespace XApi.Core.Linkbox.Models;
+﻿namespace XApi.Core.Linkbox.Models;
 
 public record LinkboxLink
 {

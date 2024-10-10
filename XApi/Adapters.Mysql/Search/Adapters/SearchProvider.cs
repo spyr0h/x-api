@@ -1,6 +1,6 @@
 ﻿using MySql.Data.MySqlClient;
 using System.Data;
-using XApi.Core.Links.Enums;
+using XApi.Core.Host.Enums;
 using XApi.Core.Pictures.Models;
 using XApi.Core.Search.Models;
 using XApi.Core.Search.Ports.Interfaces;
@@ -173,7 +173,7 @@ public class SearchProvider : ISearchProvider
                     .Select(link =>
                     {
                         var splittedLink = link.Split('µ');
-                        return new Core.Links.Models.HostLink
+                        return new Core.Host.Models.HostLink
                         {
                             Url = GetStrValue(splittedLink[0]),
                             Size = GetDoubleValue(splittedLink[1]),

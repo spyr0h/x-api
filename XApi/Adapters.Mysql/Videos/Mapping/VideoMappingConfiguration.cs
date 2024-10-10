@@ -1,11 +1,9 @@
 ﻿using Mapster;
 using XApi.Adapters.Mysql.Videos.Models;
-using XApi.Core.Links.Enums;
-using XApi.Core.Links.Models;
 using XApi.Core.Pornstars.Models;
 using XApi.Core.Tags.Models;
-using XApi.Common.Extensions;
 using XApi.Core.Pictures.Models;
+using XApi.Core.Host.Models;
 
 namespace XApi.Adapters.Mysql.Videos.Mapping;
 
