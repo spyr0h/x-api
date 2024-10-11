@@ -51,4 +51,11 @@ public class TagProvider : ITagProvider
             .Cast<Tag>()
             .ToList();
     }
+
+    public async Task<Tag?> ProvideTagForValue(string value)
+    {
+        var loweredValue = value.ToLower();
+        var tags = await ProvideAllTags();
+        return tags.FirstOrDefault(tag => tag.Value == loweredValue);
+    }
 }

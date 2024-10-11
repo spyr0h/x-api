@@ -1,5 +1,7 @@
 ﻿using Mapster;
+using XApi.API.Paging.DTO;
 using XApi.API.Search.DTO;
+using XApi.API.Tags.DTO;
 using XApi.API.Videos.DTO;
 using XApi.Core.Search.Models;
 
@@ -9,6 +11,21 @@ public class SearchMappingConfiguration : IRegister
 {
     public void Register(TypeAdapterConfig config)
     {
+        config.NewConfig<SearchCriteria, SearchCriteriaDTO>()
+            .MapWith(searchCriteria => new SearchCriteriaDTO
+            {
+                TagsIDS = searchCriteria.Tags.Select(tag => tag.ID).ToList(),
+                PornstarsIDS = searchCriteria.Pornstars.Select(pornstar => pornstar.ID).ToList(),
+                Paging = searchCriteria.Paging.Adapt<SearchPagingSpecsDTO>()
+            });
+
+        config.NewConfig<SearchPagingSpecs, SearchPagingSpecsDTO>()
+            .MapWith(searchPagingSpecs => new SearchPagingSpecsDTO
+            {
+                PageIndex = searchPagingSpecs.PageIndex,
+                ResultsPerPage = searchPagingSpecs.ResultsPerPage
+            });
+
         config.NewConfig<SearchResult, SearchResultDTO>()
             .MapWith(searchResult => new SearchResultDTO
             {

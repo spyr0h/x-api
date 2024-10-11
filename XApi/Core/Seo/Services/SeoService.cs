@@ -1,4 +1,5 @@
-﻿using XApi.Core.Search.Models;
+﻿using XApi.Core.Page.Ports.Interfaces;
+using XApi.Core.Search.Models;
 using XApi.Core.Seo.Builders.Interfaces;
 using XApi.Core.Seo.Models;
 using XApi.Core.Seo.Ports.Interfaces;
@@ -8,7 +9,8 @@ namespace XApi.Core.Seo.Services;
 public class SeoService(
     ITitleBuilder titleBuilder, 
     IDescriptionBuilder descriptionBuilder, 
-    IHeadLineBuilder headLineBuilder
+    IHeadLineBuilder headLineBuilder,
+    IPageLinkProvider pageLinkProvider
     ) : ISeoService
 {
     public SeoData ProvideSeoData(SearchCriteria searchCriteria)
@@ -18,7 +20,7 @@ public class SeoService(
             Title = titleBuilder.BuildFrom(searchCriteria),
             Description = descriptionBuilder.BuildFrom(searchCriteria),
             Headline = headLineBuilder.BuildFrom(searchCriteria),
-            Canonical = "",
+            Canonical = pageLinkProvider.ProvidePageLink(searchCriteria).Url,
             IsIndexed = false
         };
     }

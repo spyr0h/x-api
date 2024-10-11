@@ -14,6 +14,9 @@ public class TagService(ITagProvider tagProvider) : ITagService
         return SearchAndSortByProximity(tags, autocomplete.Value!.ToLower()).ToList();
     }
 
+    public Task<Tag?> ProvideTagForValue(string value)
+        => tagProvider.ProvideTagForValue(value);
+
     public Task<IList<Tag>> ProvideTagsForIds(int[] ids)
         => tagProvider.ProvideTagsForIds(ids);
 

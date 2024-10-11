@@ -7,6 +7,7 @@ namespace XApi.API.Page.DTO;
 
 public record PageResultDTO
 {
+    public SearchCriteriaDTO? SearchCriteria { get; set; }
     public SearchResultDTO? SearchResult { get; set; }
     public SeoDataDTO? SeoData { get; set; }
     public SearchPagingDTO? SearchPaging { get; set; }   

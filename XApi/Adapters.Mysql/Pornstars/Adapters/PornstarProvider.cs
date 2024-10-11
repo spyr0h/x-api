@@ -44,11 +44,18 @@ public class PornstarProvider : IPornstarProvider
 
     public async Task<IList<Pornstar>> ProvidePornstarsForIds(int[] ids)
     {
-        var tags = await ProvideAllPornstars();
+        var pornstars = await ProvideAllPornstars();
         return ids
-            .Select(id => tags.FirstOrDefault(tag => tag.ID == id))
-            .Where(tag => tag != null)
+            .Select(id => pornstars.FirstOrDefault(pornstar => pornstar.ID == id))
+            .Where(pornstar => pornstar != null)
             .Cast<Pornstar>()
             .ToList();
+    }
+
+    public async Task<Pornstar?> ProvidePornstarForValue(string value)
+    {
+        var loweredValue = value.ToLower();
+        var pornstars = await ProvideAllPornstars();
+        return pornstars.FirstOrDefault(pornstar => pornstar.Value == loweredValue);
     }
 }
