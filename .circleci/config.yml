@@ -16,9 +16,10 @@ jobs:
       - run:
           name: Build Docker Image
           command: |
+            export DOCKER_BUILDKIT=0
             echo "Starting building docker image"
             cd XApi
-            docker buildx build --build-arg BDD_CONNECTION_STRING=$BDD_CONNECTION_STRING -t x-api --platform linux/amd64 .
+            docker build --build-arg BDD_CONNECTION_STRING=$BDD_CONNECTION_STRING -t x-api .
             docker save x-api | gzip > ./x-api.tar.gz
             echo "Docker image builded and zipped"
       - persist_to_workspace:
