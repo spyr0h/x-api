@@ -51,7 +51,7 @@ jobs:
       - run:
           name: Docker compose down
           command: |
-            ssh -oStrictHostKeyChecking=no $SSHUSER@$SSHHOST 'docker-compose down'
+            ssh -oStrictHostKeyChecking=no $SSHUSER@$SSHHOST 'docker compose down'
       - run:
           name: Loading in VPS
           command: |
@@ -59,7 +59,7 @@ jobs:
       - run:
           name: Docker compose up
           command: |
-            ssh -oStrictHostKeyChecking=no $SSHUSER@$SSHHOST 'docker-compose up -d'
+            ssh -oStrictHostKeyChecking=no $SSHUSER@$SSHHOST 'docker compose up -d'
 
 workflows:
   build-and-deploy:
