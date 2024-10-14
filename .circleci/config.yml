@@ -1,31 +1,83 @@
-# Use the latest 2.1 version of CircleCI pipeline process engine.
-# See: https://circleci.com/docs/configuration-reference
 version: 2.1
 
-# Define a job to be invoked later in a workflow.
-# See: https://circleci.com/docs/jobs-steps/#jobs-overview & https://circleci.com/docs/configuration-reference/#jobs
+orbs:
+  docker: circleci/docker@2.2.0
+
 jobs:
-  say-hello:
-    # Specify the execution environment. You can specify an image from Docker Hub or use one of our convenience images from CircleCI's Developer Hub.
-    # See: https://circleci.com/docs/executor-intro/ & https://circleci.com/docs/configuration-reference/#executor-job
-    docker:
-      # Specify the version you desire here
-      # See: https://circleci.com/developer/images/image/cimg/base
-      - image: cimg/base:current
-
-    # Add steps to the job
-    # See: https://circleci.com/docs/jobs-steps/#steps-overview & https://circleci.com/docs/configuration-reference/#steps
+  build-docker-image:
+    executor:
+      name: docker/docker
+      tag: "3.6"
     steps:
-      # Checkout the code as the first step.
       - checkout
+      - docker/install-docker-tools
+      - setup_remote_docker:
+          docker_layer_caching: true
       - run:
-          name: "Say hello"
-          command: "echo Hello, World!"
+          name: Build Docker Image
+          command: |
+            echo "Starting building docker image"
+            cd TcgApi
+            mkdir images
+            docker build --build-arg BDD_CONNECTION_STRING=$BDD_CONNECTION_STRING -t x-api .
+            docker save x-api | gzip > ./x-api.tar.gz
+            echo "Docker image builded and zipped"
+      - persist_to_workspace:
+          root: XApi
+          paths:
+            - x-api.tar.gz
+            - docker-compose.yml
+  push-docker-image:
+    executor:
+      name: docker/docker
+      tag: "3.6"
+    steps:
+      - attach_workspace:
+          at: XApi
+      - run:
+          name: Pushing Docker Image
+          command: |
+            echo "Starting pushing docker image & config to VPS"
+            scp -oStrictHostKeyChecking=no XApi/x-api.tar.gz $SSHUSER@$SSHHOST:~/
+            scp -oStrictHostKeyChecking=no XApi/docker-compose.yml $SSHUSER@$SSHHOST:~/
+            echo "Docker image & config pushed to VPS"
+            ssh -oStrictHostKeyChecking=no $SSHUSER@$SSHHOST 'gzip -f -d ~/x-api.tar.gz'
+            echo "Docker image unzipped"
+  serve-docker-image:
+    executor:
+      name: docker/docker
+      tag: "3.6"
+    steps:
+      - run:
+          name: Docker compose down
+          command: |
+            ssh -oStrictHostKeyChecking=no $SSHUSER@$SSHHOST 'docker-compose down'
+      - run:
+          name: Loading in VPS
+          command: |
+            ssh -oStrictHostKeyChecking=no $SSHUSER@$SSHHOST 'docker load -i ~/x-api.tar'
+      - run:
+          name: Deleting images
+          command: |
+            ssh -oStrictHostKeyChecking=no $SSHUSER@$SSHHOST 'docker image prune -f'
+      - run:
+          name: Docker compose up
+          command: |
+            ssh -oStrictHostKeyChecking=no $SSHUSER@$SSHHOST 'docker-compose up -d'
 
-# Orchestrate jobs using workflows
-# See: https://circleci.com/docs/workflows/ & https://circleci.com/docs/configuration-reference/#workflows
 workflows:
-  say-hello-workflow: # This is the name of the workflow, feel free to change it to better match your workflow.
-    # Inside the workflow, you define the jobs you want to run.
+  build-and-deploy:
     jobs:
-      - say-hello
+      - build-docker-image
+      - push-docker-image:
+          requires:
+            - build-docker-image
+      - hold:
+          type: approval
+          requires:
+            - push-docker-image
+      - serve-docker-image:
+          requires:
+            - hold
+      
+      
