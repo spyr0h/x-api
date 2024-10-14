@@ -18,7 +18,6 @@ jobs:
           command: |
             echo "Starting building docker image"
             cd XApi
-            mkdir images
             docker build --build-arg BDD_CONNECTION_STRING=$BDD_CONNECTION_STRING -t x-api .
             docker save x-api | gzip > ./x-api.tar.gz
             echo "Docker image builded and zipped"
@@ -56,10 +55,6 @@ jobs:
           name: Loading in VPS
           command: |
             ssh -oStrictHostKeyChecking=no $SSHUSER@$SSHHOST 'docker load -i ~/x-api.tar'
-      - run:
-          name: Deleting images
-          command: |
-            ssh -oStrictHostKeyChecking=no $SSHUSER@$SSHHOST 'docker image prune -f'
       - run:
           name: Docker compose up
           command: |
