@@ -8,9 +8,9 @@ public class PageLinkProvider : IPageLinkProvider
 {
     public PageLink ProvidePageLink(SearchCriteria criteria)
     {
-        var tagsPart = string.Join('+', criteria.Tags.Select(tag => Slugify(tag.Value)));
+        var tagsPart = string.Join(',', criteria.Tags.Select(tag => Slugify(tag.Value)));
         tagsPart = string.IsNullOrEmpty(tagsPart) ? string.Empty : $"tags={tagsPart}";
-        var pornstarsPart = string.Join('+', criteria.Pornstars.Select(pornstar => Slugify(pornstar.Value)));
+        var pornstarsPart = string.Join(',', criteria.Pornstars.Select(pornstar => Slugify(pornstar.Value)));
         pornstarsPart = string.IsNullOrEmpty(pornstarsPart) ? string.Empty : $"pornstars={pornstarsPart}";
 
         var page = criteria.Paging.PageIndex == 1 ? null : $"page={criteria.Paging.PageIndex}";
@@ -27,6 +27,6 @@ public class PageLinkProvider : IPageLinkProvider
     {
         if (value == null) return "error";
         var splitted = value.Split(' ').Select(split => split.ToLower());
-        return string.Join("%20", splitted);
+        return string.Join("+", splitted);
     }
 }

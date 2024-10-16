@@ -11,6 +11,7 @@ public class PagingService(IPageLinkProvider pageLinkProvider) : IPagingService
     {
         int actualPage = searchCriteria.Paging.PageIndex;
         int maxPage = (int)Math.Ceiling((double)searchResult.GlobalCount / searchCriteria.Paging.ResultsPerPage);
+        maxPage = maxPage == 0 ? 1 : maxPage;
 
         var firstPageCriteria = actualPage == 1
             ? null

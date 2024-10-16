@@ -15,11 +15,11 @@ public class PageRoutingService(ITagService tagService, IPornstarService pornsta
         var (tags, pornstars, page) = GetUrlParsedRawData(pageLink);
 
         var foundTags = await Task.WhenAll(tags
-            .Select(async tag => (await tagService.ProvideTagForValue(tag.Replace("%20", " ")))
+            .Select(async tag => (await tagService.ProvideTagForValue(tag.Replace("+", " ")))
                 ?? throw new RoutingException($"Tag does not exists : {tag}.")));
 
         var foundPornstars = await Task.WhenAll(pornstars
-            .Select(async pornstar => (await pornstarService.ProvidePornstarForValue(pornstar.Replace("%20", " ")))
+            .Select(async pornstar => (await pornstarService.ProvidePornstarForValue(pornstar.Replace("+", " ")))
                 ?? throw new RoutingException($"Pornstar does not exists : {pornstar}.")));
 
         return new()
@@ -47,11 +47,11 @@ public class PageRoutingService(ITagService tagService, IPornstarService pornsta
         {
             if (!string.IsNullOrEmpty(match.Groups[1].Value))
             {
-                tags = match.Groups[1].Value.Split('+');
+                tags = match.Groups[1].Value.Split(',');
             }
             if (!string.IsNullOrEmpty(match.Groups[2].Value))
             {
-                pornstars = match.Groups[2].Value.Split('+').Select(ps => ps.Replace("%20", " ")).ToArray();
+                pornstars = match.Groups[2].Value.Split(',');
             }
             if (!string.IsNullOrEmpty(match.Groups[3].Value))
             {
