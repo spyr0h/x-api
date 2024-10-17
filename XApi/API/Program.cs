@@ -1,5 +1,6 @@
 using API.Page.DependencyInjection;
 using API.Paging.DependencyInjection;
+using XApi.API.Autocomplete.Endpoints;
 using XApi.API.DependencyInjection;
 using XApi.API.Linkbox.DependencyInjection;
 using XApi.API.Page.Endpoints;
@@ -45,6 +46,7 @@ app.MapTagEndpoints();
 app.MapPornstarEndpoints();
 app.MapSearchEndpoints();
 app.MapPageEndpoints();
+app.MapAutocompleteEndpoints();
 #endregion
 
 app.Run();
