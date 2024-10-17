@@ -51,6 +51,8 @@ var app = builder.Build();
     app.UseSwaggerUI();
 //}
 
+app.UseCors("AllowAll");
+
 app.UseHttpsRedirection();
 
 #region Custom endpoints registration
