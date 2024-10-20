@@ -1,6 +1,7 @@
 ﻿using Mapster;
 using MapsterMapper;
 using System.Reflection;
+using XApi.Adapters.Mysql.Categories.Adapters;
 using XApi.Adapters.Mysql.Pornstars.Adapters;
 using XApi.Adapters.Mysql.Search.Adapters;
 using XApi.Adapters.Mysql.Tags.Adapters;
@@ -18,6 +19,7 @@ public static class MapsterDependenciesExtensions
         var assemblies = AppDomain.CurrentDomain.GetAssemblies();
 
         var tagProviderToImport = typeof(TagProvider);
+        var categoryProviderToImport = typeof(CategoryProvider);
         var pornstarProviderToImport = typeof(PornstarProvider);
         var searchProviderToImport = typeof(SearchProvider);
 

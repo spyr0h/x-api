@@ -2,6 +2,7 @@
 
 public enum SuggestionType
 {
+    Category,
     Tag,
     Pornstar
 }

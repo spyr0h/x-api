@@ -1,6 +1,7 @@
 using API.Page.DependencyInjection;
 using API.Paging.DependencyInjection;
 using XApi.API.Autocomplete.Endpoints;
+using XApi.API.Categories.DependencyInjection;
 using XApi.API.DependencyInjection;
 using XApi.API.Linkbox.DependencyInjection;
 using XApi.API.Page.Endpoints;
@@ -35,6 +36,7 @@ builder.Services.AddSwaggerGen(options =>
 builder.Services.AddMapster();
 builder.Services.AddMemoryCache();
 builder.Services.AddTagsDependencies();
+builder.Services.AddCategoriesDependencies();
 builder.Services.AddPornstarsDependencies();
 builder.Services.AddSearchDependencies();
 builder.Services.AddSeoDependencies();

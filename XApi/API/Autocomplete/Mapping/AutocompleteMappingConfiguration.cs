@@ -1,6 +1,7 @@
 ﻿using Mapster;
 using XApi.API.Autocomplete.DTO;
 using XApi.API.Tags.DTO;
+using XApi.Core.Categories.Models;
 using XApi.Core.Pornstars.Models;
 using XApi.Core.Tags.Models;
 
@@ -14,6 +15,9 @@ public class AutocompleteMappingConfiguration : IRegister
             .Map(dest => dest.Value, src => src.Value);
 
         config.NewConfig<FullAutocompleteDTO, PornstarAutocomplete>()
+            .Map(dest => dest.Value, src => src.Value);
+
+        config.NewConfig<FullAutocompleteDTO, CategoryAutocomplete>()
             .Map(dest => dest.Value, src => src.Value);
     }
 }
