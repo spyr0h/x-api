@@ -67,6 +67,9 @@ public class PagingService(IPageLinkProvider pageLinkProvider) : IPagingService
         if (searchCriteria == null) return null;
 
         var pageUrl = pageLinkProvider.ProvidePageLink(searchCriteria);
+
+        if (pageUrl?.Url == null) return null;
+
         return new()
         {
             Url = pageUrl,

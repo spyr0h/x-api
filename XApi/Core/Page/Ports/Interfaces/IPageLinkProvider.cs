@@ -5,5 +5,5 @@ namespace XApi.Core.Page.Ports.Interfaces;
 
 public interface IPageLinkProvider
 {
-    public PageLink ProvidePageLink(SearchCriteria criteria);
+    public PageLink? ProvidePageLink(SearchCriteria criteria);
 }

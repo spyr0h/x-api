@@ -8,6 +8,7 @@ public class Video
     public TimeSpan? Duration { get; set; }
     public int? Year { get; set; }
     public string Tags { get; set; }
+    public string Categories { get; set; }
     public string Pornstars { get; set; } 
     public string Links { get; set; }
     public string Pictures { get; set; }

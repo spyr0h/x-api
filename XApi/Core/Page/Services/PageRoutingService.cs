@@ -5,25 +5,31 @@ using XApi.Core.Pornstars.Ports.Interfaces;
 using XApi.Core.Search.Models;
 using XApi.Core.Tags.Ports.Interfaces;
 using XApi.Core.Page.Exceptions;
+using XApi.Core.Categories.Ports.Interfaces;
 
 namespace XApi.Core.Page.Services;
 
-public class PageRoutingService(ITagService tagService, IPornstarService pornstarService) : IPageRoutingService
+public class PageRoutingService(ITagService tagService, ICategoryService categoryService, IPornstarService pornstarService) : IPageRoutingService
 {
-    public async Task<SearchCriteria> RoutePageLinkToCriteria(PageLink pageLink)
+    public async Task<SearchCriteria?> RoutePageLinkToCriteria(PageLink pageLink)
     {
-        var (tags, pornstars, page) = GetUrlParsedRawData(pageLink);
+        var (tags, pornstars, categories, page) = GetUrlParsedRawData(pageLink);
+
+        var foundCategories = await Task.WhenAll(categories
+            .Select(async category => (await categoryService.ProvideCategoryForValue(category.Replace("-", " ")))
+                ?? throw new RoutingException($"Category does not exists : {category}.")));
 
         var foundTags = await Task.WhenAll(tags
-            .Select(async tag => (await tagService.ProvideTagForValue(tag.Replace("+", " ")))
+            .Select(async tag => (await tagService.ProvideTagForValue(tag.Replace("-", " ")))
                 ?? throw new RoutingException($"Tag does not exists : {tag}.")));
 
         var foundPornstars = await Task.WhenAll(pornstars
-            .Select(async pornstar => (await pornstarService.ProvidePornstarForValue(pornstar.Replace("+", " ")))
+            .Select(async pornstar => (await pornstarService.ProvidePornstarForValue(pornstar.Replace("-", " ")))
                 ?? throw new RoutingException($"Pornstar does not exists : {pornstar}.")));
 
         return new()
         {
+            Categories = [.. foundCategories ],
             Tags = [.. foundTags],
             Pornstars = [.. foundPornstars],
             Paging = new SearchPagingSpecs
@@ -34,11 +40,17 @@ public class PageRoutingService(ITagService tagService, IPornstarService pornsta
         };
     }
 
-    public (string[], string[], int) GetUrlParsedRawData(PageLink pageLink)
+    public (string[], string[], string[], int) GetUrlParsedRawData(PageLink pageLink)
     {
-        string pattern = @"(?:tags=([^&\n]*))|(?:pornstars=([^&\n]*))|(?:page=(\d+))";
+        //string pattern = @"(?:tags=([^&\n]*))|(?:pornstars=([^&\n]*))|(?:page=(\d+))"; IF TECHNICAL URL
+        string pattern = @"(?:video\/tags\/([^\/]+))|(?:video\/pornstars\/([^\/]+))|(?:video\/categories\/([^\/]+))|(?:\/(\d+))";
+
         var matches = Regex.Matches(pageLink.Url ?? "", pattern);
 
+        if (!matches.Any())
+            throw new RoutingException($"Impossible to root url : {pageLink.Url}.");
+
+        string[] categories = [];
         string[] tags = [];
         string[] pornstars = [];
         int page = 1;
@@ -47,20 +59,22 @@ public class PageRoutingService(ITagService tagService, IPornstarService pornsta
         {
             if (!string.IsNullOrEmpty(match.Groups[1].Value))
             {
-                tags = match.Groups[1].Value.Split(',');
+                tags = [ match.Groups[1].Value ];
             }
             if (!string.IsNullOrEmpty(match.Groups[2].Value))
             {
-                pornstars = match.Groups[2].Value.Split(',');
+                pornstars = [ match.Groups[2].Value ];
             }
             if (!string.IsNullOrEmpty(match.Groups[3].Value))
             {
-                page = int.Parse(match.Groups[3].Value);
+                categories = [ match.Groups[3].Value ];
+            }
+            if (!string.IsNullOrEmpty(match.Groups[4].Value))
+            {
+                page = int.Parse(match.Groups[4].Value);
             }
         }
 
-        return (tags, pornstars, page);
-
-        throw new RoutingException($"Impossible to root url : {pageLink.Url}.");
+        return (tags, pornstars, categories, page);
     }
 }

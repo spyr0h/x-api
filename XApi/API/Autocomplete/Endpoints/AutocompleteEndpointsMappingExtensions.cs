@@ -36,20 +36,20 @@ public static class AutocompleteEndpointsMappingExtensions
                 {
                     Value = category.Value,
                     Type = SuggestionType.Category,
-                    SearchUrl = pageLinkProvider.ProvidePageLink(new() { Categories = [ category ] }).Url ?? string.Empty
-                }),
+                    SearchUrl = pageLinkProvider.ProvidePageLink(new() { Categories = [ category ] })?.Url ?? string.Empty
+                }).Take(3),
                 .. tags.Result.Select(tag => new SuggestionDTO
                 { 
                     Value = tag.Value,
                     Type = SuggestionType.Tag,
-                    SearchUrl = pageLinkProvider.ProvidePageLink(new() { Tags = [ tag ] }).Url ?? string.Empty
-                }),
+                    SearchUrl = pageLinkProvider.ProvidePageLink(new() { Tags = [ tag ] })?.Url ?? string.Empty
+                }).Take(3),
                 .. pornstars.Result.Select(pornstar => new SuggestionDTO
                 {
                     Value = pornstar.Value,
                     Type = SuggestionType.Pornstar,
-                    SearchUrl = pageLinkProvider.ProvidePageLink(new() { Pornstars = [pornstar] }).Url ?? string.Empty
-                }),
+                    SearchUrl = pageLinkProvider.ProvidePageLink(new() { Pornstars = [pornstar] })?.Url ?? string.Empty
+                }).Take(3),
             ];
 
             return Results.Ok(new SuggestionsListDTO

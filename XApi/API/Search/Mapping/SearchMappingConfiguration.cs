@@ -14,6 +14,7 @@ public class SearchMappingConfiguration : IRegister
         config.NewConfig<SearchCriteria, SearchCriteriaDTO>()
             .MapWith(searchCriteria => new SearchCriteriaDTO
             {
+                CategoriesIDS = searchCriteria.Categories.Select(category => category.ID).ToList(),
                 TagsIDS = searchCriteria.Tags.Select(tag => tag.ID).ToList(),
                 PornstarsIDS = searchCriteria.Pornstars.Select(pornstar => pornstar.ID).ToList(),
                 Paging = searchCriteria.Paging.Adapt<SearchPagingSpecsDTO>()

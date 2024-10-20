@@ -9,7 +9,7 @@ public class PagingMappingConfiguration : IRegister
     public void Register(TypeAdapterConfig config)
     {
         config.NewConfig<SearchPage, SearchPageDTO>()
-            .Map(dest => dest.Url, src => src.Url)
+            .Map(dest => dest.Url, src => src.Url!.Url)
             .Map(dest => dest.Number, src => src.Number);
 
         config.NewConfig<SearchPaging, SearchPagingDTO>()

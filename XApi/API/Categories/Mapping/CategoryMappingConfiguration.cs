@@ -1,6 +1,6 @@
 ﻿using Mapster;
-using XApi.Adapters.Mysql.Categories.Models;
 using XApi.API.Categories.DTO;
+using XApi.Core.Categories.Models;
 
 namespace XApi.API.Categories.Mapping;
 

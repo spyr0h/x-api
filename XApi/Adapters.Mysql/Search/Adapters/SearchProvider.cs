@@ -22,6 +22,7 @@ public class SearchProvider : ISearchProvider
             v.CreatedDate,
             v.ModifiedDate,
             GROUP_CONCAT(DISTINCT CONCAT(t.ID, 'µ', IFNULL(t.Value, 'NULL')) SEPARATOR '|') AS Tags,
+            GROUP_CONCAT(DISTINCT CONCAT(c.ID, 'µ', IFNULL(c.Value, 'NULL')) SEPARATOR '|') AS Categories,
             GROUP_CONCAT(DISTINCT CONCAT(p.ID, 'µ', IFNULL(p.Value, 'NULL')) SEPARATOR '|') AS Pornstars,
             GROUP_CONCAT(DISTINCT CONCAT(hl.Url, 'µ', IFNULL(hl.Size, 'NULL'), 'µ', IFNULL(hl.Host, 'NULL'), 'µ', IFNULL(hl.Resolution, 'NULL'), 'µ', IFNULL(hl.Format, 'NULL'), 'µ', IFNULL(hl.Part, 'NULL')) SEPARATOR '|') AS Links,
             GROUP_CONCAT(DISTINCT CONCAT(pc.DirectUrl, 'µ', IFNULL(pc.HostUrl, 'NULL')) SEPARATOR '|') AS Pictures
@@ -31,6 +32,10 @@ public class SearchProvider : ISearchProvider
             TagVideo tv ON v.ID = tv.VideosID
         LEFT JOIN
             Tags t ON tv.TagsID = t.ID
+        LEFT JOIN
+            CategoryVideo cv ON v.ID = cv.VideosID
+        LEFT JOIN
+            Categories c on cv.CategoriesID = c.ID
         LEFT JOIN
             PornstarVideo pv ON v.ID = pv.VideosID
         LEFT JOIN
@@ -61,12 +66,22 @@ public class SearchProvider : ISearchProvider
                     HAVING COUNT(DISTINCT PornstarsID) = {5}
                 )
             )
-
+        AND 
+            (
+                {6}
+                v.ID IN (
+                    SELECT VideosID 
+                    FROM CategoryVideo 
+                    WHERE CategoriesID IN {7}
+                    GROUP BY VideosID 
+                    HAVING COUNT(DISTINCT CategoriesID) = {8}
+                )
+            )
         GROUP BY 
             v.ID, v.Title, v.Description, v.Duration, v.Year, v.CreatedDate, v.ModifiedDate
         ORDER BY
-	        v.ModifiedDate {6}
-        LIMIT {7} OFFSET {8}
+	        v.ModifiedDate {9}
+        LIMIT {10} OFFSET {11}
     ";
 
     private readonly string _countQuery = @"
@@ -79,6 +94,10 @@ public class SearchProvider : ISearchProvider
         LEFT JOIN
             Tags t ON tv.TagsID = t.ID
         LEFT JOIN
+            CategoryVideo cv ON v.ID = cv.VideosID
+        LEFT JOIN
+            Categories c on cv.CategoriesID = c.ID
+        LEFT JOIN
             PornstarVideo pv ON v.ID = pv.VideosID
         LEFT JOIN
             Pornstars p ON pv.PornstarsID = p.ID
@@ -106,6 +125,17 @@ public class SearchProvider : ISearchProvider
                     WHERE PornstarsID IN {4}
                     GROUP BY VideosID 
                     HAVING COUNT(DISTINCT PornstarsID) = {5}
+                )
+            )
+        AND 
+            (
+                {6}
+                v.ID IN (
+                    SELECT VideosID 
+                    FROM CategoryVideo 
+                    WHERE CategoriesID IN {7}
+                    GROUP BY VideosID 
+                    HAVING COUNT(DISTINCT CategoriesID) = {8}
                 )
             )
     ";
@@ -132,6 +162,11 @@ public class SearchProvider : ISearchProvider
         var tagsIDs = $"({string.Join(",", tags)})";
         var tagsCount = searchCriteria.Tags?.Count() ?? 0;
 
+        var categories = (searchCriteria.Categories?.Any() ?? false) ? searchCriteria.Categories.Select(t => t.ID) : [-1];
+        var categoriesFalse = (searchCriteria.Categories ?? []).Any() ? "" : "1=1 OR ";
+        var categoriesIDs = $"({string.Join(",", categories)})";
+        var categoriesCount = searchCriteria.Categories?.Count() ?? 0;
+
         var pornstars = (searchCriteria.Pornstars?.Any() ?? false) ? searchCriteria.Pornstars.Select(p => p.ID) : [-1];
         var pornstarsFalse = (searchCriteria.Pornstars ?? []).Any() ? "" : "1=1 OR ";
         var pornstarsIDs = $"({string.Join(",", pornstars)})";
@@ -147,6 +182,9 @@ public class SearchProvider : ISearchProvider
             pornstarsFalse, 
             pornstarsIDs, 
             pornstarsCount,
+            categoriesFalse,
+            categoriesIDs,
+            categoriesCount,
             _defaultOrder,
             searchCriteria.Paging.ResultsPerPage,
             offset);
@@ -158,7 +196,10 @@ public class SearchProvider : ISearchProvider
             tagsCount,
             pornstarsFalse,
             pornstarsIDs,
-            pornstarsCount);
+            pornstarsCount,
+            categoriesFalse,
+            categoriesIDs,
+            categoriesCount);
 
         List<Videos.Models.Video> videos = [];
         int globalCount = -1;
@@ -176,6 +217,7 @@ public class SearchProvider : ISearchProvider
                     Duration = reader.IsDBNull("Duration") ? null : reader.GetTimeSpan("Duration"),
                     Year = reader.IsDBNull("Year") ? null : reader.GetInt32("Year"),
                     Tags = reader.IsDBNull("Tags") ? null : reader.GetString("Tags"),
+                    Categories = reader.IsDBNull("Categories") ? null : reader.GetString("Categories"),
                     Pornstars = reader.IsDBNull("Pornstars") ? null : reader.GetString("Pornstars"),
                     Links = reader.IsDBNull("Links") ? null : reader.GetString("Links"),
                     Pictures = reader.IsDBNull("Pictures") ? null : reader.GetString("Pictures"),
@@ -211,6 +253,18 @@ public class SearchProvider : ISearchProvider
                         {
                             ID = GetIntValue(splittedTag[0])!.Value,
                             Value = GetStrValue(splittedTag[1])
+                        };
+                    })
+                    .ToList() ?? [],
+                    Categories = video.Categories?
+                    .Split('|')
+                    .Select(category =>
+                    {
+                        var splittedCategory = category.Split('µ');
+                        return new Core.Categories.Models.Category
+                        {
+                            ID = GetIntValue(splittedCategory[0])!.Value,
+                            Value = GetStrValue(splittedCategory[1])
                         };
                     })
                     .ToList() ?? [],

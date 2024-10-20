@@ -24,6 +24,7 @@ public static class PageEndpointsMappingExtensions
     {
         webApplication.MapPost("/api/page/search/criteria", async (
             [FromBody] PageCriteriaDTO dto,
+            IPageLinkProvider pageLinkProvider,
             ISearchService searchService,
             ISearchCriteriaBuilder searchCriteriaBuilder,
             IPagingService pagingService,
@@ -31,6 +32,7 @@ public static class PageEndpointsMappingExtensions
             ILinkboxService linkboxService) =>
         {
             var searchCriteria = await searchCriteriaBuilder.BuildFrom(dto.SearchCriteriaDTO);
+            if (pageLinkProvider.ProvidePageLink(searchCriteria)?.Url == null) return Results.BadRequest();
             return await GetSearchResult(searchCriteria, searchService, pagingService, seoService, linkboxService);
         })
         .WithName("criteria-page")
@@ -47,6 +49,7 @@ public static class PageEndpointsMappingExtensions
             try
             {
                 var searchCriteria = await pageRoutingService.RoutePageLinkToCriteria(dto.Adapt<PageLink>());
+                if (searchCriteria == null) return Results.BadRequest();    
                 return await GetSearchResult(searchCriteria, searchService, pagingService, seoService, linkboxService);
             }
             catch(RoutingException e)

@@ -31,7 +31,7 @@ public class LinkboxService(IPageLinkProvider pageLinkProvider) : ILinkboxServic
                                     Value = "bdsm"
                                 }
                             ]
-                        }).Url,
+                        })?.Url,
                         Order = 1,
                         LinkText = "BDSM",
                         Count = 234
@@ -45,14 +45,9 @@ public class LinkboxService(IPageLinkProvider pageLinkProvider) : ILinkboxServic
                                 {
                                     ID = 2,
                                     Value = "bukkake"
-                                },
-                                new Tag
-                                {
-                                    ID = 3,
-                                    Value = "interracial"
                                 }
                             ]
-                        }).Url,
+                        })?.Url,
                         Order = 2,
                         LinkText = "Bukkake Interracial",
                         Count = 13020
@@ -76,7 +71,7 @@ public class LinkboxService(IPageLinkProvider pageLinkProvider) : ILinkboxServic
                                     Value = "clara morgane"
                                 }
                             ]
-                        }).Url,
+                        })?.Url,
                         Order = 1,
                         LinkText = "Clara Morgane",
                         Count = 1339
@@ -92,7 +87,7 @@ public class LinkboxService(IPageLinkProvider pageLinkProvider) : ILinkboxServic
                                     Value = "riley reid"
                                 }
                             ]
-                        }).Url,
+                        })?.Url,
                         Order = 2,
                         LinkText = "Riley Reid",
                         Count = 213
