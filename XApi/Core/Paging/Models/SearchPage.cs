@@ -6,4 +6,5 @@ public class SearchPage
 {
     public int Number { get; set; }
     public PageLink? Url { get; set; }
+    public bool Selected { get; set; }
 }

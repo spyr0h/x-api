@@ -9,23 +9,31 @@ public class PagingService(IPageLinkProvider pageLinkProvider) : IPagingService
 {
     public async Task<SearchPaging> CalculatePagingFromSearchData(SearchCriteria searchCriteria, SearchResult searchResult)
     {
+        var pagesCriteria = new List<SearchCriteria>();
         int actualPage = searchCriteria.Paging.PageIndex;
         int maxPage = (int)Math.Ceiling((double)searchResult.GlobalCount / searchCriteria.Paging.ResultsPerPage);
         maxPage = maxPage == 0 ? 1 : maxPage;
 
-        var firstPageCriteria = actualPage == 1
-            ? null
-            : searchCriteria with
-            {
-                Paging = searchCriteria.Paging with { PageIndex = 1 }
-            };
+        pagesCriteria.Add(searchCriteria with
+        {
+            Paging = searchCriteria.Paging with { PageIndex = 1 }
+        });
 
-        var lastPageCriteria = actualPage == maxPage
-            ? null
-            : searchCriteria with
+        pagesCriteria.AddRange(GetPages(actualPage, maxPage)
+            .ToArray()
+            .Select(page => searchCriteria with
+            {
+                Paging = searchCriteria.Paging with { PageIndex = page }
+            }));
+
+        if (maxPage > 1)
+            pagesCriteria.Add(searchCriteria with
             {
                 Paging = searchCriteria.Paging with { PageIndex = maxPage }
-            };
+            });
+
+        if (!pagesCriteria.Any(p => p.Paging.PageIndex == actualPage))
+            pagesCriteria.Add(searchCriteria);
 
         var previousPage = actualPage == 1
             ? null
@@ -41,28 +49,22 @@ public class PagingService(IPageLinkProvider pageLinkProvider) : IPagingService
                 Paging = searchCriteria.Paging with { PageIndex = actualPage + 1 }
             };
 
-        var pages = GetPages(actualPage, maxPage)
-            .ToArray()
-            .Select(page => searchCriteria with
-            {
-                Paging = searchCriteria.Paging with { PageIndex = page }
-            });
+        
 
         return new SearchPaging()
         {
-            FirstPage = BuildWith(firstPageCriteria),
-            LastPage = BuildWith(lastPageCriteria),
-            PreviousPage = BuildWith(previousPage),
-            NextPage = BuildWith(nextPage),
-            Pages = pages
-                .Select(BuildWith)
+            PreviousPage = BuildWith(previousPage, actualPage),
+            NextPage = BuildWith(nextPage, actualPage),
+            Pages = pagesCriteria
+                .OrderBy(page => page.Paging.PageIndex)
+                .Select(page => BuildWith(page, actualPage))
                 .Where(page => page != null)
                 .Cast<SearchPage>()
                 .ToList()
         };
     }
 
-    private SearchPage? BuildWith(SearchCriteria? searchCriteria)
+    private SearchPage? BuildWith(SearchCriteria? searchCriteria, int actualPage)
     {
         if (searchCriteria == null) return null;
 
@@ -73,7 +75,8 @@ public class PagingService(IPageLinkProvider pageLinkProvider) : IPagingService
         return new()
         {
             Url = pageUrl,
-            Number = searchCriteria.Paging.PageIndex
+            Number = searchCriteria.Paging.PageIndex,
+            Selected = searchCriteria.Paging.PageIndex == actualPage
         };
     }
 
