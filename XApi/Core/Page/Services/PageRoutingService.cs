@@ -15,6 +15,16 @@ public class PageRoutingService(ITagService tagService, ICategoryService categor
     {
         var (tags, pornstars, categories, page) = GetUrlParsedRawData(pageLink);
 
+        if (pageLink.Url!.Contains("/video/all"))
+            return new()
+            {
+                Paging = new()
+                {
+                    PageIndex = page,
+                    ResultsPerPage = 25
+                }
+            };
+
         var foundCategories = await Task.WhenAll(categories
             .Select(async category => (await categoryService.ProvideCategoryForValue(category.Replace("-", " ")))
                 ?? throw new RoutingException($"Category does not exists : {category}.")));
@@ -43,7 +53,7 @@ public class PageRoutingService(ITagService tagService, ICategoryService categor
     public (string[], string[], string[], int) GetUrlParsedRawData(PageLink pageLink)
     {
         //string pattern = @"(?:tags=([^&\n]*))|(?:pornstars=([^&\n]*))|(?:page=(\d+))"; IF TECHNICAL URL
-        string pattern = @"(?:video\/tags\/([^\/]+))|(?:video\/pornstars\/([^\/]+))|(?:video\/categories\/([^\/]+))|(?:\/(\d+))";
+        string pattern = @"(?:video\/all)|(?:video\/tags\/([^\/]+))|(?:video\/pornstars\/([^\/]+))|(?:video\/categories\/([^\/]+))|(?:\/(\d+))";
 
         var matches = Regex.Matches(pageLink.Url ?? "", pattern);
 

@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using XApi.API.Search.Builder.Interfaces;
 using XApi.API.Search.DTO;
-using XApi.Core.Search.Models;
 using XApi.Core.Search.Ports.Interfaces;
 
 namespace XApi.API.Search.Endpoints;

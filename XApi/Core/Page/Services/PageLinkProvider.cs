@@ -16,6 +16,7 @@ public class PageLinkProvider : IPageLinkProvider
             { Pornstars: [], Categories: [] } when criteria.Tags.Count == 1 => GenerateTagUrl(criteria.Tags),
             { Pornstars: [], Tags: [] } when criteria.Categories.Count == 1 => GenerateCategoryUrl(criteria.Categories),
             { Categories: [], Tags: [] } when criteria.Pornstars.Count == 1 => GeneratePornstarUrl(criteria.Pornstars),
+            { Categories: [], Tags: [], Pornstars: [] } => new PageLink { Url = "/video/all" },
             _ => null
         };
 
