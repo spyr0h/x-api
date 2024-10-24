@@ -72,7 +72,7 @@ public static class PageEndpointsMappingExtensions
         var searchResult = await searchService.SearchVideosByCriteria(searchCriteria);
         var searchPaging = await pagingService.CalculatePagingFromSearchData(searchCriteria, searchResult);
         var seoData = seoService.ProvideSeoData(searchCriteria);
-        var linkboxes = linkboxService.ProvideLinkboxes(searchCriteria);
+        var linkboxes = await linkboxService.ProvideLinkboxes(searchCriteria);
 
         return Results.Ok(new PageResultDTO
         {

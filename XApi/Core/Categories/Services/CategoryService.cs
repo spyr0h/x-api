@@ -14,6 +14,9 @@ public class CategoryService(ICategoryProvider categoryProvider) : ICategoryServ
         return SearchAndSortByProximity(tags, autocomplete.Value!.ToLower()).ToList();
     }
 
+    public Task<IList<Category>> ProvideAllCategories()
+        => categoryProvider.ProvideAllCategories();
+
     public Task<IList<Category>> ProvideCategoriesForIds(int[] ids)
         => categoryProvider.ProvideCategoriesForIds(ids);
 
