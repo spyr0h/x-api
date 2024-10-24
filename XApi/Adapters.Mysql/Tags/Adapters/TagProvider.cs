@@ -31,7 +31,7 @@ public class TagProvider : ITagProvider
             using var dbConnection = Connection;
             dbConnection.Open();
 
-            var query = "SELECT * FROM Tags";
+            var query = "SELECT c.ID, c.Value, COUNT(v.ID) AS Count FROM Tags c LEFT JOIN TagVideo cv ON c.ID = cv.TagsID LEFT JOIN Videos v ON cv.VideosID = v.ID GROUP BY c.ID, c.Value ORDER BY c.Value ASC";
             var tags = await dbConnection.QueryAsync<Models.Tag>(query);
 
             cachedTags = tags.Select(tag => tag.Adapt<Tag>()).ToList();

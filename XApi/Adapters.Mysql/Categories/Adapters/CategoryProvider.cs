@@ -31,7 +31,7 @@ public class CategoryProvider : ICategoryProvider
             using var dbConnection = Connection;
             dbConnection.Open();
 
-            var query = "SELECT * FROM Categories";
+            var query = "SELECT c.ID, c.Value, COUNT(v.ID) AS Count FROM Categories c LEFT JOIN CategoryVideo cv ON c.ID = cv.CategoriesID LEFT JOIN Videos v ON cv.VideosID = v.ID GROUP BY c.ID, c.Value ORDER BY c.Value ASC";
             var categories = await dbConnection.QueryAsync<Models.Category>(query);
 
             cachedCategories = categories.Select(category => category.Adapt<Category>()).ToList();

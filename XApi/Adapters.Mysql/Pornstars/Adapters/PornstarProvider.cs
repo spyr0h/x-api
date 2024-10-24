@@ -31,7 +31,7 @@ public class PornstarProvider : IPornstarProvider
             using var dbConnection = Connection;
             dbConnection.Open();
 
-            var query = "SELECT * FROM Pornstars";
+            var query = "SELECT c.ID, c.Value, COUNT(v.ID) AS Count FROM Pornstars c LEFT JOIN PornstarVideo cv ON c.ID = cv.PornstarsID LEFT JOIN Videos v ON cv.VideosID = v.ID GROUP BY c.ID, c.Value ORDER BY c.Value ASC";
             var pornstars = await dbConnection.QueryAsync<Models.Pornstar>(query);
 
             cachedPornstars = pornstars.Select(pornstar => pornstar.Adapt<Pornstar>()).ToList();

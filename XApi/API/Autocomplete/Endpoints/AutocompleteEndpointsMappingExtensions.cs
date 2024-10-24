@@ -1,5 +1,6 @@
 ﻿using Mapster;
 using Microsoft.AspNetCore.Mvc;
+using XApi.Adapters.Mysql.Categories.Models;
 using XApi.API.Autocomplete.DTO;
 using XApi.API.Tags.DTO;
 using XApi.Core.Autocomplete.Enums;
@@ -32,21 +33,21 @@ public static class AutocompleteEndpointsMappingExtensions
 
             List<SuggestionDTO> suggestions =
             [
-                ..categories.Result.Select(category => new SuggestionDTO
+                ..categories.Result.OrderByDescending(c => c.Count).ThenBy(c => c.Value).Select(category => new SuggestionDTO
                 {
-                    Value = category.Value,
+                    Value = category.Count == 0 ? category.Value : $"{category.Value} ({category.Count})",
                     Type = SuggestionType.Category,
                     SearchUrl = pageLinkProvider.ProvidePageLink(new() { Categories = [ category ] })?.Url ?? string.Empty
                 }).Take(3),
-                .. tags.Result.Select(tag => new SuggestionDTO
+                .. tags.Result.OrderByDescending(t => t.Count).ThenBy(t => t.Value).Select(tag => new SuggestionDTO
                 { 
-                    Value = tag.Value,
+                    Value = tag.Count == 0 ? tag.Value : $"{tag.Value} ({tag.Count})",
                     Type = SuggestionType.Tag,
                     SearchUrl = pageLinkProvider.ProvidePageLink(new() { Tags = [ tag ] })?.Url ?? string.Empty
                 }).Take(3),
-                .. pornstars.Result.Select(pornstar => new SuggestionDTO
+                .. pornstars.Result.OrderByDescending(p => p.Count).ThenBy(p => p.Value).Select(pornstar => new SuggestionDTO
                 {
-                    Value = pornstar.Value,
+                    Value = pornstar.Count == 0 ? pornstar.Value : $"{pornstar.Value} ({pornstar.Count})",
                     Type = SuggestionType.Pornstar,
                     SearchUrl = pageLinkProvider.ProvidePageLink(new() { Pornstars = [pornstar] })?.Url ?? string.Empty
                 }).Take(3),

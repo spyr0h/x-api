@@ -10,7 +10,8 @@ public class PornstarMappingConfiguration : IRegister
     {
         config.NewConfig<Pornstar, PornstarDTO>()
             .Map(dest => dest.ID, src => src.ID)
-            .Map(dest => dest.Value, src => src.Value);
+            .Map(dest => dest.Value, src => src.Value)
+            .Map(dest => dest.Count, src => src.Count);
 
         config.NewConfig<PornstarAutocompleteDTO, PornstarAutocomplete>()
             .Map(dest => dest.Value, src => src.Value);
