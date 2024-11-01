@@ -15,7 +15,7 @@ public class PageRoutingService(ITagService tagService, ICategoryService categor
     {
         var (tags, pornstars, categories, page) = GetUrlParsedRawData(pageLink);
 
-        if (pageLink.Url!.Contains("/video/all"))
+        if (pageLink.Url!.Contains("/videos/all"))
             return new()
             {
                 Paging = new()
@@ -53,7 +53,7 @@ public class PageRoutingService(ITagService tagService, ICategoryService categor
     public (string[], string[], string[], int) GetUrlParsedRawData(PageLink pageLink)
     {
         //string pattern = @"(?:tags=([^&\n]*))|(?:pornstars=([^&\n]*))|(?:page=(\d+))"; IF TECHNICAL URL
-        string pattern = @"(?:video\/all)|(?:video\/tags\/([^\/]+))|(?:video\/pornstars\/([^\/]+))|(?:video\/categories\/([^\/]+))|(?:\/(\d+))";
+        string pattern = @"(?:videos\/all)|(?:video\/tags\/([^\/]+))|(?:videos\/pornstars\/([^\/]+))|(?:videos\/categories\/([^\/]+))|(?:\/(\d+))";
 
         var matches = Regex.Matches(pageLink.Url ?? "", pattern);
 
