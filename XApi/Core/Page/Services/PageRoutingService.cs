@@ -53,7 +53,7 @@ public class PageRoutingService(ITagService tagService, ICategoryService categor
     public (string[], string[], string[], int) GetUrlParsedRawData(PageLink pageLink)
     {
         //string pattern = @"(?:tags=([^&\n]*))|(?:pornstars=([^&\n]*))|(?:page=(\d+))"; IF TECHNICAL URL
-        string pattern = @"(?:videos\/all)|(?:video\/tags\/([^\/]+))|(?:videos\/pornstars\/([^\/]+))|(?:videos\/categories\/([^\/]+))|(?:\/(\d+))";
+        string pattern = @"(?:videos\/all)|(?:videos\/tags\/([^\/]+))|(?:videos\/pornstars\/([^\/]+))|(?:videos\/categories\/([^\/]+))|(?:\/(\d+))";
 
         var matches = Regex.Matches(pageLink.Url ?? "", pattern);
 
