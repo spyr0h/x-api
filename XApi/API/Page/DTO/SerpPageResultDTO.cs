@@ -5,7 +5,7 @@ using XApi.API.Seo.DTO;
 
 namespace XApi.API.Page.DTO;
 
-public record PageResultDTO
+public record SerpPageResultDTO
 {
     public SearchCriteriaDTO? SearchCriteria { get; set; }
     public SearchResultDTO? SearchResult { get; set; }

@@ -7,6 +7,7 @@ using XApi.API.Paging.DTO;
 using XApi.API.Search.Builder.Interfaces;
 using XApi.API.Search.DTO;
 using XApi.API.Seo.DTO;
+using XApi.Core.Linkbox.Models;
 using XApi.Core.Linkbox.Ports.Interfaces;
 using XApi.Core.Page.Exceptions;
 using XApi.Core.Page.Models;
@@ -65,15 +66,23 @@ public static class PageEndpointsMappingExtensions
         webApplication.MapPost("/api/page/detail/url", async (
             [FromBody] PageLinkDTO dto,
             IPageRoutingService pageRoutingService,
-            IVideoService videoService) =>
+            IVideoService videoService,
+            ISeoService seoService,
+            ILinkboxService linkboxService) =>
         {
             try
             {
                 var videoId = await pageRoutingService.RoutePageLinkToVideoId(dto.Adapt<PageLink>());
                 if (videoId == null) return Results.BadRequest();
-                var video = videoService.ProvideVideoForId(videoId!.Value);
+                var video = await videoService.ProvideVideoForId(videoId!.Value);
+                if (video == null) return Results.BadRequest();
 
-                return null;
+                return Results.Ok(new DetailPageResultDTO
+                {
+                    Video = video,
+                    SeoData = seoService.ProvideSeoData(video).Adapt<SeoDataDTO>(),
+                    Linkboxes = (await linkboxService.ProvideLinkboxes(video)).Adapt<LinkboxesDTO>()
+                });
             }
             catch (RoutingException e)
             {
@@ -97,7 +106,7 @@ public static class PageEndpointsMappingExtensions
         var seoData = seoService.ProvideSeoData(searchCriteria);
         var linkboxes = await linkboxService.ProvideLinkboxes(searchCriteria);
 
-        return Results.Ok(new PageResultDTO
+        return Results.Ok(new SerpPageResultDTO
         {
             SearchCriteria = searchCriteria.Adapt<SearchCriteriaDTO>(),
             SearchResult = searchResult.Adapt<SearchResultDTO>(),
