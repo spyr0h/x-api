@@ -22,6 +22,7 @@ public static class MapsterDependenciesExtensions
         var categoryProviderToImport = typeof(CategoryProvider);
         var pornstarProviderToImport = typeof(PornstarProvider);
         var searchProviderToImport = typeof(SearchProvider);
+        var videoProviderToImport = typeof(VideoProvider);
 
         assemblies.ToList().ForEach(assembly => config.Scan(assembly));
 

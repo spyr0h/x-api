@@ -50,7 +50,18 @@ public class PageRoutingService(ITagService tagService, ICategoryService categor
         };
     }
 
-    public (string[], string[], string[], int) GetUrlParsedRawData(PageLink pageLink)
+    public async Task<int?> RoutePageLinkToVideoId(PageLink pageLink)
+    {
+        if (!Uri.IsWellFormedUriString(pageLink.Url, UriKind.RelativeOrAbsolute)) return default;
+        var splitted = pageLink.Url.Split("/").Last().Split("-");
+
+        if (int.TryParse(splitted[0], out int id))
+            return id;
+
+        return null;
+    }
+
+    private (string[], string[], string[], int) GetUrlParsedRawData(PageLink pageLink)
     {
         //string pattern = @"(?:tags=([^&\n]*))|(?:pornstars=([^&\n]*))|(?:page=(\d+))"; IF TECHNICAL URL
         string pattern = @"(?:videos\/all)|(?:videos\/tags\/([^\/]+))|(?:videos\/pornstars\/([^\/]+))|(?:videos\/categories\/([^\/]+))|(?:\/(\d+))";

@@ -15,6 +15,7 @@ using XApi.Core.Paging.Ports.Interfaces;
 using XApi.Core.Search.Models;
 using XApi.Core.Search.Ports.Interfaces;
 using XApi.Core.Seo.Ports.Interfaces;
+using XApi.Core.Videos.Ports.Interfaces;
 
 namespace XApi.API.Page.Endpoints;
 
@@ -58,7 +59,29 @@ public static class PageEndpointsMappingExtensions
                 return Results.BadRequest(e.Message);
             }
         })
-        .WithName("url-page")
+        .WithName("url-serp-page")
+        .WithOpenApi();
+
+        webApplication.MapPost("/api/page/detail/url", async (
+            [FromBody] PageLinkDTO dto,
+            IPageRoutingService pageRoutingService,
+            IVideoService videoService) =>
+        {
+            try
+            {
+                var videoId = await pageRoutingService.RoutePageLinkToVideoId(dto.Adapt<PageLink>());
+                if (videoId == null) return Results.BadRequest();
+                var video = videoService.ProvideVideoForId(videoId!.Value);
+
+                return null;
+            }
+            catch (RoutingException e)
+            {
+                Log.Warning(e.Message);
+                return Results.BadRequest(e.Message);
+            }
+        })
+        .WithName("url-detail-page")
         .WithOpenApi();
     }
 

@@ -43,6 +43,7 @@ builder.Services.AddSeoDependencies();
 builder.Services.AddPagingsDependencies();
 builder.Services.AddPagesDependencies();
 builder.Services.AddLinkboxesDependencies();
+builder.Services.AddVideoDependencies();
 #endregion
 
 var app = builder.Build();
