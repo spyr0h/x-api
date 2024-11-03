@@ -9,6 +9,7 @@ using XApi.API.Pornstars.DependencyInjection;
 using XApi.API.Pornstars.Endpoints;
 using XApi.API.Search.DependencyInjection;
 using XApi.API.Search.Endpoints;
+using XApi.API.Suggestion.DependencyInjection;
 using XApi.API.Tags.DependencyInjection;
 using XApi.API.Tags.Endpoints;
 
@@ -44,6 +45,7 @@ builder.Services.AddPagingsDependencies();
 builder.Services.AddPagesDependencies();
 builder.Services.AddLinkboxesDependencies();
 builder.Services.AddVideoDependencies();
+builder.Services.AddSuggestionDependencies();
 #endregion
 
 var app = builder.Build();

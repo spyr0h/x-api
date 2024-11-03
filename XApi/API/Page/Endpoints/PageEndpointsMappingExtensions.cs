@@ -7,6 +7,7 @@ using XApi.API.Paging.DTO;
 using XApi.API.Search.Builder.Interfaces;
 using XApi.API.Search.DTO;
 using XApi.API.Seo.DTO;
+using XApi.API.Suggestion.DTO;
 using XApi.Core.Linkbox.Models;
 using XApi.Core.Linkbox.Ports.Interfaces;
 using XApi.Core.Page.Exceptions;
@@ -16,6 +17,7 @@ using XApi.Core.Paging.Ports.Interfaces;
 using XApi.Core.Search.Models;
 using XApi.Core.Search.Ports.Interfaces;
 using XApi.Core.Seo.Ports.Interfaces;
+using XApi.Core.Suggestion.Ports.Interfaces;
 using XApi.Core.Videos.Ports.Interfaces;
 
 namespace XApi.API.Page.Endpoints;
@@ -68,7 +70,8 @@ public static class PageEndpointsMappingExtensions
             IPageRoutingService pageRoutingService,
             IVideoService videoService,
             ISeoService seoService,
-            ILinkboxService linkboxService) =>
+            ILinkboxService linkboxService,
+            ISuggestionService suggestionService) =>
         {
             try
             {
@@ -81,7 +84,10 @@ public static class PageEndpointsMappingExtensions
                 {
                     Video = video,
                     SeoData = seoService.ProvideSeoData(video).Adapt<SeoDataDTO>(),
-                    Linkboxes = (await linkboxService.ProvideLinkboxes(video)).Adapt<LinkboxesDTO>()
+                    Linkboxes = (await linkboxService.ProvideLinkboxes(video)).Adapt<LinkboxesDTO>(),
+                    SuggestionBoxes = (await suggestionService.ProvideSuggestions(video))
+                        .Select(suggestionBox => suggestionBox.Adapt<SuggestionBoxDTO>())
+                        .ToArray()
                 });
             }
             catch (RoutingException e)
