@@ -1,4 +1,5 @@
-﻿using XApi.Core.Suggestion.Enums;
+﻿using System.Collections.Generic;
+using XApi.Core.Suggestion.Enums;
 using XApi.Core.Suggestion.Models;
 using XApi.Core.Suggestion.Ports.Interfaces;
 using XApi.Core.Videos.Models;
@@ -20,7 +21,7 @@ public class SuggestionService(ISuggestionProvider suggestionProvider) : ISugges
 
         if (suggestedVideos == null) return [];
 
-        (List<Video> similarPornstarVideos, List<Video> similarTagVideos, List<Video> similarCategoryVideos)
+        (List<Video> similarVideos, List<Video> similarPornstarVideos, List<Video> similarTagVideos, List<Video> similarCategoryVideos)
             = GetSplittedSuggestedVideos(video, suggestedVideos);
 
         var suggestionBoxes = new List<SuggestionBox>();
@@ -31,6 +32,7 @@ public class SuggestionService(ISuggestionProvider suggestionProvider) : ISugges
         if (similarTagVideos.Count != 0 || similarCategoryVideos.Count != 0)
             suggestionBoxes.Add(
                 ConstructSimilarBox(
+                    similarVideos,
                     similarTagVideos, 
                     similarCategoryVideos, 
                     suggestionBoxes.FirstOrDefault()?.SuggestedVideos?.Length ?? 0));
@@ -52,10 +54,14 @@ public class SuggestionService(ISuggestionProvider suggestionProvider) : ISugges
         };
     }
 
-    private SuggestionBox ConstructSimilarBox(List<Video> similarTagVideos, List<Video> similarCategoryVideos, int pornstarCount)
+    private SuggestionBox ConstructSimilarBox(
+        List<Video> similarVideos, 
+        List<Video> similarTagVideos, 
+        List<Video> similarCategoryVideos, 
+        int pornstarCount)
     {
         // Tags = 80%, Categories = 20%
-        var countLeft = _suggestedMaxNumber - pornstarCount;
+        var countLeft = _suggestedMaxNumber - pornstarCount - similarVideos.Count;
         var tagMaxCount = (int)Math.Ceiling(countLeft * _percentageOfTags);
         var tagCount = similarTagVideos.Count;
         var catMaxCount = countLeft - tagMaxCount;
@@ -76,14 +82,16 @@ public class SuggestionService(ISuggestionProvider suggestionProvider) : ISugges
             Order = 2,
             Category = SuggestionCategory.SimilarSuggestion,
             SuggestedVideos = [
-                .. similarCategoryVideos.Take(catFinalCount),
-                .. similarTagVideos.Take(tagFinalCount)
+                .. similarVideos,
+                .. similarTagVideos.Take(tagFinalCount),
+                .. similarCategoryVideos.Take(catFinalCount)
             ]
         };
     }
 
-    private (List<Video>, List<Video>, List<Video>) GetSplittedSuggestedVideos(Video video, Video[] suggestedVideos)
+    private (List<Video>, List<Video>, List<Video>, List<Video>) GetSplittedSuggestedVideos(Video video, Video[] suggestedVideos)
     {
+        var similarVideos = new List<Video>();
         var similarPornstarVideos = new List<Video>();
         var similarTagVideos = new List<Video>();
         var similarCategoryVideos = new List<Video>();
@@ -93,13 +101,17 @@ public class SuggestionService(ISuggestionProvider suggestionProvider) : ISugges
             if (suggestedVideo.Pornstars.Any(video.Pornstars.Contains))
                 similarPornstarVideos.Add(suggestedVideo);
 
-            if (suggestedVideo.Tags.Any(video.Tags.Contains))
+            else if (suggestedVideo.Tags.Any(video.Tags.Contains)
+                && suggestedVideo.Categories.Any(video.Categories.Contains))
+                similarVideos.Add(suggestedVideo);
+
+            else if (suggestedVideo.Tags.Any(video.Tags.Contains))
                 similarTagVideos.Add(suggestedVideo);
 
-            if (suggestedVideo.Categories.Any(video.Categories.Contains))
+            else if (suggestedVideo.Categories.Any(video.Categories.Contains))
                 similarCategoryVideos.Add(suggestedVideo);
         }
 
-        return (similarPornstarVideos, similarTagVideos, similarCategoryVideos);
+        return (similarVideos, similarPornstarVideos, similarTagVideos, similarCategoryVideos);
     }
 }
