@@ -107,7 +107,8 @@ public static class PageEndpointsMappingExtensions
         ISeoService seoService,
         ILinkboxService linkboxService)
     {
-        var searchResult = (searchCriteria.Categories.Count == 0
+        var searchResult = (searchCriteria.Terms != null
+            && searchCriteria.Categories.Count == 0
             && searchCriteria.Tags.Count == 0
             && searchCriteria.Pornstars.Count == 0) ? new SearchResult
             {
