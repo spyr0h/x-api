@@ -6,5 +6,6 @@ public interface ICategoryProvider
 {
     Task<IList<Category>> ProvideAllCategories();
     Task<Category?> ProvideCategoryForValue(string value);
+    Task<IList<Category>> ProvideCategoriesForNonCompleteValue(string value);
     Task<IList<Category>> ProvideCategoriesForIds(int[] ids);
 }

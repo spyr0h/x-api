@@ -1,6 +1,8 @@
-﻿namespace XApi.Core.Pornstars.Models;
+﻿using XApi.Core.Autocomplete.Interfaces;
 
-public record Pornstar
+namespace XApi.Core.Pornstars.Models;
+
+public record Pornstar : IAutocompletable
 {
     public int ID { get; set; }
     public string? Value { get; set; }

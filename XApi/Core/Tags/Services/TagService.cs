@@ -1,4 +1,6 @@
-﻿using XApi.Core.Tags.Models;
+﻿using XApi.Core.Autocomplete.Helpers;
+using XApi.Core.Categories.Ports.Interfaces;
+using XApi.Core.Tags.Models;
 using XApi.Core.Tags.Ports.Interfaces;
 
 namespace XApi.Core.Tags.Services;
@@ -11,7 +13,7 @@ public class TagService(ITagProvider tagProvider) : ITagService
 
         var tags = await tagProvider.ProvideAllTags();
 
-        return SearchAndSortByProximity(tags, autocomplete.Value!.ToLower()).ToList();
+        return tags.SearchAndSortByProximity(autocomplete.Value!.ToLower()).ToList();
     }
 
     public Task<Tag?> ProvideTagForValue(string value)
@@ -20,11 +22,17 @@ public class TagService(ITagProvider tagProvider) : ITagService
     public Task<IList<Tag>> ProvideTagsForIds(int[] ids)
         => tagProvider.ProvideTagsForIds(ids);
 
-    private IEnumerable<Tag> SearchAndSortByProximity(IEnumerable<Tag> tags, string fragment)
-        => tags
-            .Where(tag => !string.IsNullOrEmpty(tag.Value))
-            .Select(tag => new { Tag = tag, Index = tag.Value!.IndexOf(fragment, StringComparison.OrdinalIgnoreCase) })
-            .Where(x => x.Index >= 0)
-            .OrderBy(x => x.Index)
-            .Select(x => x.Tag);
+    public async Task<IList<Tag>> ProvideTagsForTerms(string terms)
+    {
+        var splittedTerms = terms.Split(" ");
+        var tasks = splittedTerms.Select(tagProvider.ProvideTagsForNonCompleteValue);
+
+        return (await Task.WhenAll(tasks))
+            .SelectMany(tags => tags)
+            .GroupBy(tag => tag.ID)
+            .OrderByDescending(group => group.Count())
+            .Take(2)
+            .Select(group => group.First())
+            .ToList();
+    }
 }

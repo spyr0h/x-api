@@ -1,4 +1,5 @@
-﻿using XApi.Core.Pornstars.Models;
+﻿using XApi.Core.Autocomplete.Helpers;
+using XApi.Core.Pornstars.Models;
 using XApi.Core.Pornstars.Ports.Interfaces;
 
 namespace XApi.Core.Pornstars.Services;
@@ -11,7 +12,7 @@ public class PornstarService(IPornstarProvider pornstarProvider) : IPornstarServ
 
         var pornstars = await pornstarProvider.ProvideAllPornstars();
 
-        return SearchAndSortByProximity(pornstars, autocomplete.Value!.ToLower()).ToList();
+        return pornstars.SearchAndSortByProximity(autocomplete.Value!.ToLower()).ToList();
     }
 
     public Task<IList<Pornstar>> ProvideAllPornstars()
@@ -23,11 +24,17 @@ public class PornstarService(IPornstarProvider pornstarProvider) : IPornstarServ
     public Task<IList<Pornstar>> ProvidePornstarsForIds(int[] ids)
         => pornstarProvider.ProvidePornstarsForIds(ids);
 
-    private IEnumerable<Pornstar> SearchAndSortByProximity(IEnumerable<Pornstar> pornstars, string fragment)
-        => pornstars
-            .Where(pornstar => !string.IsNullOrEmpty(pornstar.Value))
-            .Select(pornstar => new { Pornstar = pornstar, Index = pornstar.Value!.IndexOf(fragment, StringComparison.OrdinalIgnoreCase) })
-            .Where(x => x.Index >= 0)
-            .OrderBy(x => x.Index)
-            .Select(x => x.Pornstar);
+    public async Task<IList<Pornstar>> ProvidePornstarsForTerms(string terms)
+    {
+        var splittedTerms = terms.Split(" ");
+        var tasks = splittedTerms.Select(pornstarProvider.ProvidePornstarsForNonCompleteValue);
+
+        return (await Task.WhenAll(tasks))
+            .SelectMany(pornstars => pornstars)
+            .GroupBy(pornstar => pornstar.ID)
+            .OrderByDescending(group => group.Count())
+            .Take(2)
+            .Select(group => group.First())
+            .ToList();
+    }
 }

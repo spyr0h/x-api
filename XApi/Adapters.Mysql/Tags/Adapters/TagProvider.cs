@@ -58,4 +58,13 @@ public class TagProvider : ITagProvider
         var tags = await ProvideAllTags();
         return tags.FirstOrDefault(tag => tag.Value == loweredValue);
     }
+
+    public async Task<IList<Tag>> ProvideTagsForNonCompleteValue(string value)
+    {
+        var loweredValue = value.ToLower();
+        var tags = await ProvideAllTags();
+        return tags
+            .Where(tag => tag.Value!.Contains(loweredValue))
+            .ToList();
+    }
 }

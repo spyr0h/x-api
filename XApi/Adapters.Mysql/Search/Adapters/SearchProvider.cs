@@ -53,36 +53,33 @@ public class SearchProvider : ISearchProvider
                     FROM TagVideo 
                     WHERE TagsID IN {1}
                     GROUP BY VideosID 
-                    HAVING COUNT(DISTINCT TagsID) = {2}
                 )
             )
         AND 
             (
-                {3}
+                {2}
                 v.ID IN (
                     SELECT VideosID 
                     FROM PornstarVideo 
-                    WHERE PornstarsID IN {4}
+                    WHERE PornstarsID IN {3}
                     GROUP BY VideosID 
-                    HAVING COUNT(DISTINCT PornstarsID) = {5}
                 )
             )
         AND 
             (
-                {6}
+                {4}
                 v.ID IN (
                     SELECT VideosID 
                     FROM CategoryVideo 
-                    WHERE CategoriesID IN {7}
+                    WHERE CategoriesID IN {5}
                     GROUP BY VideosID 
-                    HAVING COUNT(DISTINCT CategoriesID) = {8}
                 )
             )
         GROUP BY 
             v.ID, v.Title, v.Description, v.Duration, v.Year, v.CreatedDate, v.ModifiedDate
         ORDER BY
-	        v.ModifiedDate {9}
-        LIMIT {10} OFFSET {11}
+	        v.ModifiedDate {6}
+        LIMIT {7} OFFSET {8}
     ";
 
     private readonly string _countQuery = @"
@@ -114,29 +111,26 @@ public class SearchProvider : ISearchProvider
                     FROM TagVideo 
                     WHERE TagsID IN {1}
                     GROUP BY VideosID 
-                    HAVING COUNT(DISTINCT TagsID) = {2}
                 )
             )
         AND 
             (
-                {3}
+                {2}
                 v.ID IN (
                     SELECT VideosID 
                     FROM PornstarVideo 
-                    WHERE PornstarsID IN {4}
+                    WHERE PornstarsID IN {3}
                     GROUP BY VideosID 
-                    HAVING COUNT(DISTINCT PornstarsID) = {5}
                 )
             )
         AND 
             (
-                {6}
+                {4}
                 v.ID IN (
                     SELECT VideosID 
                     FROM CategoryVideo 
-                    WHERE CategoriesID IN {7}
+                    WHERE CategoriesID IN {5}
                     GROUP BY VideosID 
-                    HAVING COUNT(DISTINCT CategoriesID) = {8}
                 )
             )
     ";
@@ -161,17 +155,14 @@ public class SearchProvider : ISearchProvider
         var tags = (searchCriteria.Tags?.Any() ?? false) ? searchCriteria.Tags.Select(t => t.ID) : [-1];
         var tagsFalse = (searchCriteria.Tags ?? []).Any() ? "" : "1=1 OR ";
         var tagsIDs = $"({string.Join(",", tags)})";
-        var tagsCount = searchCriteria.Tags?.Count() ?? 0;
 
         var categories = (searchCriteria.Categories?.Any() ?? false) ? searchCriteria.Categories.Select(t => t.ID) : [-1];
         var categoriesFalse = (searchCriteria.Categories ?? []).Any() ? "" : "1=1 OR ";
         var categoriesIDs = $"({string.Join(",", categories)})";
-        var categoriesCount = searchCriteria.Categories?.Count() ?? 0;
 
         var pornstars = (searchCriteria.Pornstars?.Any() ?? false) ? searchCriteria.Pornstars.Select(p => p.ID) : [-1];
         var pornstarsFalse = (searchCriteria.Pornstars ?? []).Any() ? "" : "1=1 OR ";
         var pornstarsIDs = $"({string.Join(",", pornstars)})";
-        var pornstarsCount = searchCriteria.Pornstars?.Count() ?? 0;
 
         var offset = searchCriteria.Paging.ResultsPerPage * (searchCriteria.Paging.PageIndex - 1);
 
@@ -179,13 +170,10 @@ public class SearchProvider : ISearchProvider
             _query, 
             tagsFalse, 
             tagsIDs, 
-            tagsCount, 
             pornstarsFalse, 
             pornstarsIDs, 
-            pornstarsCount,
             categoriesFalse,
             categoriesIDs,
-            categoriesCount,
             _defaultOrder,
             searchCriteria.Paging.ResultsPerPage,
             offset);
@@ -194,13 +182,10 @@ public class SearchProvider : ISearchProvider
             _countQuery,
             tagsFalse,
             tagsIDs,
-            tagsCount,
             pornstarsFalse,
             pornstarsIDs,
-            pornstarsCount,
             categoriesFalse,
-            categoriesIDs,
-            categoriesCount);
+            categoriesIDs);
 
         List<Videos.Models.Video> videos = [];
         int globalCount = -1;

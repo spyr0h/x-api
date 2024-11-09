@@ -9,4 +9,5 @@ public interface ICategoryService
     Task<IList<Category>> Autocomplete(CategoryAutocomplete autocomplete);
     Task<IList<Category>> ProvideCategoriesForIds(int[] ids);
     Task<Category?> ProvideCategoryForValue(string value);
+    Task<IList<Category>> ProvideCategoriesForTerms(string terms);
 }

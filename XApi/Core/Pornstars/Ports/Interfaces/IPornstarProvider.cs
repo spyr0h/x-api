@@ -6,5 +6,6 @@ public interface IPornstarProvider
 {
     Task<IList<Pornstar>> ProvideAllPornstars();
     Task<Pornstar?> ProvidePornstarForValue(string value);
+    Task<IList<Pornstar>> ProvidePornstarsForNonCompleteValue(string value);
     Task<IList<Pornstar>> ProvidePornstarsForIds(int[] ids);
 }

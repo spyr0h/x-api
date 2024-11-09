@@ -1,6 +1,8 @@
-﻿namespace XApi.Core.Categories.Models;
+﻿using XApi.Core.Autocomplete.Interfaces;
 
-public record Category
+namespace XApi.Core.Categories.Models;
+
+public record Category : IAutocompletable
 {
     public int ID { get; set; }
     public string? Value { get; set; }

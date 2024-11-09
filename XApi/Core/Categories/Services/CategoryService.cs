@@ -1,4 +1,5 @@
-﻿using XApi.Core.Categories.Models;
+﻿using XApi.Core.Autocomplete.Helpers;
+using XApi.Core.Categories.Models;
 using XApi.Core.Categories.Ports.Interfaces;
 
 namespace XApi.Core.Categories.Services;
@@ -9,9 +10,9 @@ public class CategoryService(ICategoryProvider categoryProvider) : ICategoryServ
     {
         if (string.IsNullOrEmpty(autocomplete.Value)) return [];
 
-        var tags = await categoryProvider.ProvideAllCategories();
+        var categories = await categoryProvider.ProvideAllCategories();
 
-        return SearchAndSortByProximity(tags, autocomplete.Value!.ToLower()).ToList();
+        return categories.SearchAndSortByProximity(autocomplete.Value!.ToLower()).ToList();
     }
 
     public Task<IList<Category>> ProvideAllCategories()
@@ -20,14 +21,20 @@ public class CategoryService(ICategoryProvider categoryProvider) : ICategoryServ
     public Task<IList<Category>> ProvideCategoriesForIds(int[] ids)
         => categoryProvider.ProvideCategoriesForIds(ids);
 
+    public async Task<IList<Category>> ProvideCategoriesForTerms(string terms)
+    {
+        var splittedTerms = terms.Split(" ");
+        var tasks = splittedTerms.Select(categoryProvider.ProvideCategoriesForNonCompleteValue);
+
+        return (await Task.WhenAll(tasks))
+            .SelectMany(cats => cats)
+            .GroupBy(cat => cat.ID)
+            .OrderByDescending(group => group.Count())
+            .Take(2)
+            .Select(group => group.First())
+            .ToList();
+    }
+
     public Task<Category?> ProvideCategoryForValue(string value)
         => categoryProvider.ProvideCategoryForValue(value);
-
-    private IEnumerable<Category> SearchAndSortByProximity(IEnumerable<Category> categories, string fragment)
-        => categories
-            .Where(cat => !string.IsNullOrEmpty(cat.Value))
-            .Select(cat => new { Category = cat, Index = cat.Value!.IndexOf(fragment, StringComparison.OrdinalIgnoreCase) })
-            .Where(x => x.Index >= 0)
-            .OrderBy(x => x.Index)
-            .Select(x => x.Category);
 }

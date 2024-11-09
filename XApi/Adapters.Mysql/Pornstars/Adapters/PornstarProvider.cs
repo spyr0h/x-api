@@ -58,4 +58,13 @@ public class PornstarProvider : IPornstarProvider
         var pornstars = await ProvideAllPornstars();
         return pornstars.FirstOrDefault(pornstar => pornstar.Value == loweredValue);
     }
+
+    public async Task<IList<Pornstar>> ProvidePornstarsForNonCompleteValue(string value)
+    {
+        var loweredValue = value.ToLower();
+        var pornstars = await ProvideAllPornstars();
+        return pornstars
+            .Where(pornstar => pornstar.Value!.Contains(loweredValue))
+            .ToList();
+    }
 }

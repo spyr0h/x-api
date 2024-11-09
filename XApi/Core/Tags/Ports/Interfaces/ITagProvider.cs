@@ -6,5 +6,6 @@ public interface ITagProvider
 {
     Task<IList<Tag>> ProvideAllTags();
     Task<Tag?> ProvideTagForValue(string value);
+    Task<IList<Tag>> ProvideTagsForNonCompleteValue(string value);
     Task<IList<Tag>> ProvideTagsForIds(int[] ids);
 }

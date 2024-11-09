@@ -58,4 +58,13 @@ public class CategoryProvider : ICategoryProvider
         var categories = await ProvideAllCategories();
         return categories.FirstOrDefault(category => category.Value == loweredValue);
     }
+
+    public async Task<IList<Category>> ProvideCategoriesForNonCompleteValue(string value)
+    {
+        var loweredValue = value.ToLower();
+        var categories = await ProvideAllCategories();
+        return categories
+            .Where(category => category.Value!.Contains(loweredValue))
+            .ToList();
+    }
 }

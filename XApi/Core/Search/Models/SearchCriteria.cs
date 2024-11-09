@@ -6,6 +6,7 @@ namespace XApi.Core.Search.Models;
 
 public record SearchCriteria
 {
+    public string? Terms { get; set; }
     public List<Category> Categories { get; set; } = [];
     public List<Tag> Tags { get; set; } = [];
     public List<Pornstar> Pornstars { get; set; } = [];
