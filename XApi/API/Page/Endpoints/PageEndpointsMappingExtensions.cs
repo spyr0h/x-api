@@ -107,7 +107,14 @@ public static class PageEndpointsMappingExtensions
         ISeoService seoService,
         ILinkboxService linkboxService)
     {
-        var searchResult = await searchService.SearchVideosByCriteria(searchCriteria);
+        var searchResult = (searchCriteria.Categories.Count == 0
+            && searchCriteria.Tags.Count == 0
+            && searchCriteria.Pornstars.Count == 0) ? new SearchResult
+            {
+                Count = 0,
+                GlobalCount = 0,
+                Videos = []
+            } : await searchService.SearchVideosByCriteria(searchCriteria);
         var searchPaging = await pagingService.CalculatePagingFromSearchData(searchCriteria, searchResult);
         var seoData = seoService.ProvideSeoData(searchCriteria);
         var linkboxes = await linkboxService.ProvideLinkboxes(searchCriteria);
