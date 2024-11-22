@@ -10,6 +10,7 @@ using XApi.Core.Pornstars.Models;
 using XApi.Core.Tags.Models;
 using System.Text.Json.Serialization;
 using System.Text.Json;
+using XApi.Core.Search.Enums;
 
 namespace XApi.Core.Page.Services;
 
@@ -51,6 +52,17 @@ public class PageRoutingService(ITagService tagService, ICategoryService categor
                 Paging = new()
                 {
                     PageIndex = page,
+                    ResultsPerPage = 25
+                }
+            };
+
+        if (url.Contains("/videos/best"))
+            return new()
+            {
+                Paging = new()
+                {
+                    PageIndex = page,
+                    SearchOrder = SearchOrder.Clicks,
                     ResultsPerPage = 25
                 }
             };

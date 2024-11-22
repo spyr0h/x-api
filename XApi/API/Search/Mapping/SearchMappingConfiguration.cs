@@ -1,7 +1,5 @@
 ﻿using Mapster;
-using XApi.API.Paging.DTO;
 using XApi.API.Search.DTO;
-using XApi.API.Tags.DTO;
 using XApi.API.Videos.DTO;
 using XApi.Core.Search.Models;
 
@@ -24,6 +22,7 @@ public class SearchMappingConfiguration : IRegister
             .MapWith(searchPagingSpecs => new SearchPagingSpecsDTO
             {
                 PageIndex = searchPagingSpecs.PageIndex,
+                SearchOrder = searchPagingSpecs.SearchOrder,
                 ResultsPerPage = searchPagingSpecs.ResultsPerPage
             });
 
@@ -37,6 +36,7 @@ public class SearchMappingConfiguration : IRegister
 
         config.NewConfig<SearchPagingSpecsDTO, SearchPagingSpecs>()
             .Map(dest => dest.PageIndex, src => src.PageIndex)
+            .Map(dest => dest.SearchOrder, src => src.SearchOrder)
             .Map(dest => dest.ResultsPerPage, src => src.ResultsPerPage);
     }
 }

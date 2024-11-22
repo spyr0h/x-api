@@ -1,4 +1,5 @@
-﻿using Mapster;
+﻿using Dapper;
+using Mapster;
 using Microsoft.Extensions.Caching.Memory;
 using MySql.Data.MySqlClient;
 using System.Data;
@@ -49,6 +50,23 @@ public class VideoProvider : IVideoProvider
             Pictures pc ON v.ID = pc.VideoId
         WHERE v.ID = {0}
     ";
+
+    private readonly string _queryCheck = @"
+        SELECT * 
+        FROM Stats 
+        WHERE VideoId = @VideoId 
+          AND CreatedDate > DATE_SUB(NOW(), INTERVAL 1 WEEK)
+        LIMIT 1;";
+
+    private readonly string _queryInsert = @"
+        INSERT INTO Stats (Clicks, VideoId, CreatedDate, ModifiedDate)
+        VALUES (1, @VideoId, NOW(), NOW());";
+
+    private readonly string _queryUpdate = @"
+        UPDATE Stats
+        SET Clicks = Clicks + 1,
+            ModifiedDate = NOW()
+        WHERE ID = @ID;";
 
     private MySqlConnection Connection => new MySqlConnection(_connectionString);
 
@@ -110,7 +128,37 @@ public class VideoProvider : IVideoProvider
             if (video != null)
                 _cache.Set(string.Format(_cacheKey, id), video, _cacheDuration);
         }
+
+        if (video != null)
+            AddClickToVideo(video);
         
         return video;
+    }
+    private void AddClickToVideo(Core.Videos.Models.Video video)
+    {
+        using var dbConnection = Connection;
+        dbConnection.Open();
+        using var transaction = dbConnection.BeginTransaction();
+
+        try
+        {
+            var existingStat = dbConnection.QueryFirstOrDefault<Stat>(_queryCheck, new { VideoId = video.ID }, transaction);
+
+            if (existingStat != null)
+            {
+                dbConnection.Execute(_queryUpdate, new { existingStat.ID }, transaction);
+            }
+            else
+            {
+                dbConnection.Execute(_queryInsert, new { VideoId = video.ID }, transaction);
+            }
+
+            transaction.Commit();
+        }
+        catch
+        {
+            transaction.Rollback();
+            throw;
+        }
     }
 }
