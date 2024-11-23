@@ -13,7 +13,7 @@ public class PornstarProvider : IPornstarProvider
     private readonly string _connectionString;
     private readonly IMemoryCache _cache;
     private readonly string _cacheKey = "AllPornstars";
-    private readonly TimeSpan _cacheDuration = TimeSpan.FromDays(1);
+    private readonly TimeSpan _cacheDuration = TimeSpan.FromHours(3);
 
     private IDbConnection Connection => new MySqlConnection(_connectionString);
 
@@ -31,7 +31,25 @@ public class PornstarProvider : IPornstarProvider
             using var dbConnection = Connection;
             dbConnection.Open();
 
-            var query = "SELECT c.ID, c.Value, COUNT(v.ID) AS Count FROM Pornstars c LEFT JOIN PornstarVideo cv ON c.ID = cv.PornstarsID LEFT JOIN Videos v ON cv.VideosID = v.ID GROUP BY c.ID, c.Value ORDER BY c.Value ASC";
+            var query = @"
+                SELECT 
+                    c.ID, 
+                    c.Value, 
+                    COUNT(v.ID) AS Count,
+                    SUM(CASE 
+                        WHEN v.ModifiedDate >= DATE_SUB(NOW(), INTERVAL 1 DAY) THEN 1 
+                        ELSE 0 
+                    END) AS RecentCount
+                FROM 
+                    Pornstars c
+                LEFT JOIN 
+                    PornstarVideo cv ON c.ID = cv.PornstarsID
+                LEFT JOIN 
+                    Videos v ON cv.VideosID = v.ID
+                GROUP BY 
+                    c.ID, c.Value
+                ORDER BY 
+                    c.Value ASC;";
             var pornstars = await dbConnection.QueryAsync<Models.Pornstar>(query);
 
             cachedPornstars = pornstars.Select(pornstar => pornstar.Adapt<Pornstar>()).ToList();

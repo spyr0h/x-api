@@ -13,6 +13,7 @@ public record Video
     public string? Description { get; set; }
     public TimeSpan? Duration { get; set; }
     public int? Year { get; set; }
+    public bool New { get; set; }
     public List<Tag> Tags { get; set; } = [];
     public List<Category> Categories { get; set; } = [];
     public List<Pornstar> Pornstars { get; set; } = [];

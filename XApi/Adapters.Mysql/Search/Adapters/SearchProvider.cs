@@ -235,6 +235,7 @@ public class SearchProvider : ISearchProvider
                     Description = reader.IsDBNull("Description") ? null : reader.GetString("Description"),
                     Duration = reader.IsDBNull("Duration") ? null : reader.GetTimeSpan("Duration"),
                     Year = reader.IsDBNull("Year") ? null : reader.GetInt32("Year"),
+                    ModifiedDate = reader.IsDBNull("ModifiedDate") ? null : reader.GetDateTime("ModifiedDate"),
                     Tags = reader.IsDBNull("Tags") ? null : reader.GetString("Tags"),
                     Categories = reader.IsDBNull("Categories") ? null : reader.GetString("Categories"),
                     Pornstars = reader.IsDBNull("Pornstars") ? null : reader.GetString("Pornstars"),

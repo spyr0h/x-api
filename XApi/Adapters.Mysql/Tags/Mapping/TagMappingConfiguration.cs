@@ -9,6 +9,7 @@ public class TagMappingConfiguration : IRegister
         config.NewConfig<Models.Tag, Core.Tags.Models.Tag>()
             .Map(dest => dest.ID, src => src.ID)
             .Map(dest => dest.Value, src => src.Value)
-            .Map(dest => dest.Count, src => src.Count);
+            .Map(dest => dest.Count, src => src.Count)
+            .Map(dest => dest.RecentCount, src => src.RecentCount);
     }
 }

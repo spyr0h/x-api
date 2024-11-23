@@ -2,6 +2,7 @@
 using XApi.Adapters.Mysql.Videos.Models;
 using XApi.Core.Pictures.Models;
 using XApi.Core.Host.Enums;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace XApi.Adapters.Mysql.Videos.Mapping;
 
@@ -21,6 +22,8 @@ public class VideoMappingConfiguration : IRegister
             Description = video.Description,
             Duration = video.Duration,
             Year = video.Year,
+            New = video.ModifiedDate != null 
+                && ((DateTime.Now - video.ModifiedDate!.Value).TotalDays < 1),
             Tags = video.Tags?
                     .Split('|')
                     .Select(tag =>

@@ -21,6 +21,7 @@ public class VideoMappingConfiguration : IRegister
                 Description = video.Description,
                 Duration = video.Duration,
                 Year = video.Year,
+                New = video.New,
                 Tags = video.Tags.Select(tag => tag.Adapt<TagDTO>()).ToList(),
                 Categories = video.Categories.Select(category => category.Adapt<CategoryDTO>()).ToList(),
                 Pornstars = video.Pornstars.Select(pornstar => pornstar.Adapt<PornstarDTO>()).ToList(),
