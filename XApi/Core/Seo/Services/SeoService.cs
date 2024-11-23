@@ -14,7 +14,7 @@ public class SeoService(
     IPageLinkProvider pageLinkProvider
     ) : ISeoService
 {
-    public SeoData ProvideSeoData(SearchCriteria searchCriteria)
+    public SeoData ProvideSeoData(SearchCriteria searchCriteria, SearchResult searchResult)
     {
         return new()
         {
@@ -22,7 +22,8 @@ public class SeoService(
             Description = descriptionBuilder.BuildFrom(searchCriteria),
             Headline = headLineBuilder.BuildFrom(searchCriteria),
             Canonical = pageLinkProvider.ProvidePageLink(searchCriteria).Url,
-            IsIndexed = false
+            IsIndexed = false,
+            RecentCount = searchResult.RecentCount
         };
     }
 

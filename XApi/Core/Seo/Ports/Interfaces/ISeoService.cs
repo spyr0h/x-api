@@ -6,6 +6,6 @@ namespace XApi.Core.Seo.Ports.Interfaces;
 
 public interface ISeoService
 {
-    SeoData ProvideSeoData(SearchCriteria searchCriteria);
+    SeoData ProvideSeoData(SearchCriteria searchCriteria, SearchResult searchResult);
     SeoData ProvideSeoData(Video video);
 }

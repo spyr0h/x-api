@@ -13,6 +13,7 @@ public class SeoMappingConfiguration : IRegister
             .Map(dest => dest.Description, src => src.Description)
             .Map(dest => dest.Headline, src => src.Headline)
             .Map(dest => dest.Canonical, src => src.Canonical)
-            .Map(dest => dest.IsIndexed, src => src.IsIndexed);
+            .Map(dest => dest.IsIndexed, src => src.IsIndexed)
+            .Map(dest => dest.RecentCount, src => src.RecentCount);
     }
 }

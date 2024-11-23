@@ -88,7 +88,11 @@ public class SearchProvider : ISearchProvider
 
     private readonly string _countQuery = @"
         SELECT 
-            COUNT(DISTINCT v.ID) as COUNT
+            COUNT(DISTINCT v.ID) as COUNT,
+            COUNT(DISTINCT CASE
+                WHEN v.ModifiedDate >= DATE_SUB(NOW(), INTERVAL 1 DAY) THEN v.ID
+                ELSE NULL
+            END) AS NEWCOUNT
             {6}
         FROM
             Videos v
@@ -142,6 +146,7 @@ public class SearchProvider : ISearchProvider
             )
         {9}
     ";
+
 
     private readonly string _defaultOrder = "DESC";
             
@@ -222,6 +227,7 @@ public class SearchProvider : ISearchProvider
 
         List<Videos.Models.Video> videos = [];
         int globalCount = -1;
+        int newCount = -1;
 
         using (MySqlCommand command = new(finalQuery, dbConnection))
         {
@@ -252,6 +258,7 @@ public class SearchProvider : ISearchProvider
             using MySqlDataReader reader = command.ExecuteReader();
             reader.Read();
             globalCount = reader.GetInt32("COUNT");
+            newCount = reader.GetInt32("NEWCOUNT");
         }
 
         var convertedVideos = videos.Select(video => {
@@ -269,6 +276,7 @@ public class SearchProvider : ISearchProvider
         return new SearchResult
         {
             GlobalCount = globalCount,
+            RecentCount = newCount,
             Count = convertedVideos.Count(),
             Videos = convertedVideos.ToList()
         };

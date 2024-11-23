@@ -7,4 +7,5 @@ public record SeoData
     public string? Headline { get; set; }
     public string? Canonical { get; set; }
     public bool IsIndexed { get; set; }
+    public int RecentCount { get; set; }
 }

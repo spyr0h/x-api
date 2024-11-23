@@ -18,7 +18,8 @@ public class LinkboxMappingConfiguration : IRegister
             .Map(dest => dest.Url, src => src.Url)
             .Map(dest => dest.LinkText, src => src.LinkText)
             .Map(dest => dest.Order, src => src.Order)
-            .Map(dest => dest.Count, src => src.Count);
+            .Map(dest => dest.Count, src => src.Count)
+            .Map(dest => dest.RecentCount, src => src.RecentCount);
 
         config.NewConfig<Core.Linkbox.Models.Linkbox, LinkboxDTO>()
             .MapWith(linkbox => new LinkboxDTO

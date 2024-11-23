@@ -117,7 +117,7 @@ public static class PageEndpointsMappingExtensions
                 Videos = []
             } : await searchService.SearchVideosByCriteria(searchCriteria);
         var searchPaging = await pagingService.CalculatePagingFromSearchData(searchCriteria, searchResult);
-        var seoData = seoService.ProvideSeoData(searchCriteria);
+        var seoData = seoService.ProvideSeoData(searchCriteria, searchResult);
         var linkboxes = await linkboxService.ProvideLinkboxes(searchCriteria);
 
         return Results.Ok(new SerpPageResultDTO

@@ -135,6 +135,7 @@ public class SuggestionProvider : ISuggestionProvider
                     Duration = reader.IsDBNull("Duration") ? null : reader.GetTimeSpan("Duration"),
                     Year = reader.IsDBNull("Year") ? null : reader.GetInt32("Year"),
                     Tags = reader.IsDBNull("Tags") ? null : reader.GetString("Tags"),
+                    ModifiedDate = reader.IsDBNull("ModifiedDate") ? null : reader.GetDateTime("ModifiedDate"),
                     Categories = reader.IsDBNull("Categories") ? null : reader.GetString("Categories"),
                     Pornstars = reader.IsDBNull("Pornstars") ? null : reader.GetString("Pornstars"),
                     Links = reader.IsDBNull("Links") ? null : reader.GetString("Links"),

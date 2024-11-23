@@ -62,8 +62,9 @@ public class LinkboxService(IPageLinkProvider pageLinkProvider, ICategoryService
                     ]
                 })?.Url,
                 Order = i,
-                LinkText = $"{category.Value} ({category.Count})",
-                Count = category.Count
+                LinkText = $"{category.Value}",
+                Count = category.Count,
+                RecentCount = category.RecentCount,
             })
             .ToArray();
     }
@@ -83,8 +84,9 @@ public class LinkboxService(IPageLinkProvider pageLinkProvider, ICategoryService
                     ]
                 })?.Url,
                 Order = i,
-                LinkText = $"{pornstar.Value} ({pornstar.Count})",
-                Count = pornstar.Count
+                LinkText = $"{pornstar.Value}",
+                Count = pornstar.Count,
+                RecentCount = pornstar.RecentCount,
             })
             .ToArray();
     }

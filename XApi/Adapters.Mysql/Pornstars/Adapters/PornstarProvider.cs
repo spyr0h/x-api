@@ -36,9 +36,9 @@ public class PornstarProvider : IPornstarProvider
                     c.ID, 
                     c.Value, 
                     COUNT(v.ID) AS Count,
-                    SUM(CASE 
-                        WHEN v.ModifiedDate >= DATE_SUB(NOW(), INTERVAL 1 DAY) THEN 1 
-                        ELSE 0 
+                    COUNT(DISTINCT CASE
+                        WHEN v.ModifiedDate >= DATE_SUB(NOW(), INTERVAL 1 DAY) THEN v.ID
+                        ELSE NULL
                     END) AS RecentCount
                 FROM 
                     Pornstars c
