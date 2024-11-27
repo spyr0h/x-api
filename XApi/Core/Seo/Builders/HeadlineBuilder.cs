@@ -6,7 +6,7 @@ namespace XApi.Core.Seo.Builders;
 
 public class HeadlineBuilder : IHeadLineBuilder
 {
-    public string BuildFrom(SearchCriteria criteria)
+    public string BuildFrom(SearchCriteria criteria, SearchResult searchResult)
     {
         var catRepresentation = string.Join(' ', criteria.Categories.Select(t => t.Value) ?? []).CapitalizeFirstLetter();
         catRepresentation = string.IsNullOrEmpty(catRepresentation) ? string.Empty : $"{catRepresentation} ";
@@ -15,6 +15,6 @@ public class HeadlineBuilder : IHeadLineBuilder
         var pornstarRepresentation = string.Join(", ", criteria.Pornstars.Select(p => p.Value?.CapitalizeFirstLetterOfEachWord() ?? "") ?? []);
         pornstarRepresentation = string.IsNullOrEmpty(pornstarRepresentation) ? string.Empty : $" of {pornstarRepresentation}";
 
-        return $"{catRepresentation}{tagRepresentation}Porn Videos{pornstarRepresentation}";
+        return $"{(searchResult.GlobalCount == 0 ? string.Empty : searchResult.GlobalCount)}{catRepresentation}{tagRepresentation}Porn Videos{pornstarRepresentation}";
     }
 }

@@ -18,11 +18,11 @@ public class SeoService(
     {
         return new()
         {
-            Title = titleBuilder.BuildFrom(searchCriteria),
-            Description = descriptionBuilder.BuildFrom(searchCriteria),
-            Headline = headLineBuilder.BuildFrom(searchCriteria),
+            Title = titleBuilder.BuildFrom(searchCriteria, searchResult),
+            Description = descriptionBuilder.BuildFrom(searchCriteria, searchResult),
+            Headline = headLineBuilder.BuildFrom(searchCriteria, searchResult),
             Canonical = pageLinkProvider.ProvidePageLink(searchCriteria).Url,
-            IsIndexed = false,
+            IsIndexed = true,
             RecentCount = searchResult.RecentCount
         };
     }

@@ -4,5 +4,5 @@ namespace XApi.Core.Seo.Builders.Interfaces;
 
 public interface ITitleBuilder
 {
-    public string BuildFrom(SearchCriteria criteria);
+    public string BuildFrom(SearchCriteria criteria, SearchResult searchResult);
 }

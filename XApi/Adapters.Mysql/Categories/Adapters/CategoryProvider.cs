@@ -34,7 +34,9 @@ public class CategoryProvider : ICategoryProvider
             var query = @"
                 SELECT 
                     c.ID, 
-                    c.Value, 
+                    c.Value,
+                    c.Title,
+                    c.Description,
                     COUNT(v.ID) AS Count,
                     COUNT(DISTINCT CASE
                         WHEN v.ModifiedDate >= DATE_SUB(NOW(), INTERVAL 1 DAY) THEN v.ID
@@ -74,7 +76,7 @@ public class CategoryProvider : ICategoryProvider
     {
         var loweredValue = value.ToLower();
         var categories = await ProvideAllCategories();
-        return categories.FirstOrDefault(category => category.Value == loweredValue);
+        return categories.FirstOrDefault(category => category.Value! == loweredValue);
     }
 
     public async Task<IList<Category>> ProvideCategoriesForNonCompleteValue(string value)
