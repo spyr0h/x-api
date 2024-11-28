@@ -1,5 +1,6 @@
 ﻿using Mapster;
 using Microsoft.AspNetCore.Mvc;
+using XApi.API.Filter;
 using XApi.API.Pornstars.DTO;
 using XApi.Core.Pornstars.Models;
 using XApi.Core.Pornstars.Ports.Interfaces;
@@ -17,6 +18,7 @@ public static class PornstarEndpointsMappingExtensions
                 Pornstars = foundPornstars.Select(pornstar => pornstar.Adapt<PornstarDTO>()).ToList()
             });
         })
+        .AddEndpointFilter<PrivateApiKeyAuthorizationFilter>()
         .WithName("pornstar-autocomplete")
         .WithOpenApi();
 }

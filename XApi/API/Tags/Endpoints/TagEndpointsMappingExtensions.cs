@@ -1,5 +1,6 @@
 ﻿using Mapster;
 using Microsoft.AspNetCore.Mvc;
+using XApi.API.Filter;
 using XApi.API.Tags.DTO;
 using XApi.Core.Tags.Models;
 using XApi.Core.Tags.Ports.Interfaces;
@@ -17,6 +18,7 @@ public static class TagEndpointsMappingExtensions
                 Tags = foundTags.Select(tag => tag.Adapt<TagDTO>()).ToList()
             });
         })
+        .AddEndpointFilter<PrivateApiKeyAuthorizationFilter>()
         .WithName("tag-autocomplete")
         .WithOpenApi();
 }

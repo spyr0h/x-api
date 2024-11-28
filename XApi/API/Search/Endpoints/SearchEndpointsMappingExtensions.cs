@@ -1,5 +1,6 @@
 ﻿using Mapster;
 using Microsoft.AspNetCore.Mvc;
+using XApi.API.Filter;
 using XApi.API.Search.Builder.Interfaces;
 using XApi.API.Search.DTO;
 using XApi.Core.Search.Ports.Interfaces;
@@ -18,6 +19,7 @@ public static class SearchEndpointsMappingExtensions
             var searchResult = await searchService.SearchVideosByCriteria(searchCriteria);
             return Results.Ok(searchResult.Adapt<SearchResultDTO>());
         })
+        .AddEndpointFilter<PrivateApiKeyAuthorizationFilter>()
         .WithName("criteria-search")
         .WithOpenApi();
 }

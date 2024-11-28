@@ -19,7 +19,7 @@ jobs:
             export DOCKER_BUILDKIT=0
             echo "Starting building docker image"
             cd XApi
-            docker build --build-arg BDD_CONNECTION_STRING="$BDD_CONNECTION_STRING" -t x-api .
+            docker build --build-arg BDD_CONNECTION_STRING="$BDD_CONNECTION_STRING" PUBLIC_API_KEY="$PUBLIC_API_KEY" PRIVATE_API_KEY="$PRIVATE_API_KEY" -t x-api .
             docker save x-api | gzip > ./x-api.tar.gz
             echo "Docker image builded and zipped"
       - persist_to_workspace:
@@ -75,5 +75,3 @@ workflows:
       - serve-docker-image:
           requires:
             - hold
-      
-      

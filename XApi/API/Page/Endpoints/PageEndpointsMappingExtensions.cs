@@ -1,6 +1,7 @@
 ﻿using Mapster;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
+using XApi.API.Filter;
 using XApi.API.Linkbox.DTO;
 using XApi.API.Page.DTO;
 using XApi.API.Paging.DTO;
@@ -39,6 +40,7 @@ public static class PageEndpointsMappingExtensions
             if (pageLinkProvider.ProvidePageLink(searchCriteria)?.Url == null) return Results.BadRequest();
             return await GetSearchResult(searchCriteria, searchService, pagingService, seoService, linkboxService);
         })
+        .AddEndpointFilter<PrivateApiKeyAuthorizationFilter>()
         .WithName("criteria-page")
         .WithOpenApi();
 
@@ -62,6 +64,7 @@ public static class PageEndpointsMappingExtensions
                 return Results.BadRequest(e.Message);
             }
         })
+        .AddEndpointFilter<PrivateApiKeyAuthorizationFilter>()
         .WithName("url-serp-page")
         .WithOpenApi();
 
@@ -96,6 +99,7 @@ public static class PageEndpointsMappingExtensions
                 return Results.BadRequest(e.Message);
             }
         })
+        .AddEndpointFilter<PrivateApiKeyAuthorizationFilter>()
         .WithName("url-detail-page")
         .WithOpenApi();
     }

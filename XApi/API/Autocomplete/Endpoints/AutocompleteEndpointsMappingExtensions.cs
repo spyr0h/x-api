@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using XApi.Adapters.Mysql.Categories.Models;
 using XApi.API.Autocomplete.DTO;
+using XApi.API.Filter;
 using XApi.API.Tags.DTO;
 using XApi.Core.Autocomplete.Enums;
 using XApi.Core.Categories.Models;
@@ -60,6 +61,7 @@ public static class AutocompleteEndpointsMappingExtensions
                     .ToArray()
             });
         })
+        .AddEndpointFilter<PublicApiKeyAuthorizationFilter>()
         .WithName("full-autocomplete")
         .WithOpenApi();
 }

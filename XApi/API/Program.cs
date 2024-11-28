@@ -1,5 +1,6 @@
 using API.Page.DependencyInjection;
 using API.Paging.DependencyInjection;
+using Microsoft.OpenApi.Models;
 using XApi.API.Autocomplete.Endpoints;
 using XApi.API.Categories.DependencyInjection;
 using XApi.API.DependencyInjection;
@@ -30,7 +31,30 @@ builder.Services.AddCors(options =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
-    options.EnableAnnotations();
+    options.AddSecurityDefinition("ApiKey", new OpenApiSecurityScheme
+    {
+        Description = "Clé API pour l'autorisation. Utilisez le format 'Bearer {votre-clé-api}'.",
+        Name = "Authorization",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "ApiKey"
+    });
+
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "ApiKey"
+                },
+                In = ParameterLocation.Header
+            },
+            new List<string>()
+        }
+    });
 });
 
 #region Custom dependencies DI
