@@ -19,9 +19,13 @@ jobs:
             export DOCKER_BUILDKIT=0
             echo "Starting building docker image"
             cd XApi
-            docker build --build-arg BDD_CONNECTION_STRING="$BDD_CONNECTION_STRING" PUBLIC_API_KEY="$PUBLIC_API_KEY" PRIVATE_API_KEY="$PRIVATE_API_KEY" -t x-api .
+            docker build \
+                --build-arg BDD_CONNECTION_STRING="$BDD_CONNECTION_STRING" \
+                --build-arg PUBLIC_API_KEY="$PUBLIC_API_KEY" \
+                --build-arg PRIVATE_API_KEY="$PRIVATE_API_KEY" \
+                -t x-api .
             docker save x-api | gzip > ./x-api.tar.gz
-            echo "Docker image builded and zipped"
+            echo "Docker image built and zipped"
       - persist_to_workspace:
           root: XApi
           paths:
