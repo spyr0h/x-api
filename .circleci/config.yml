@@ -31,6 +31,9 @@ jobs:
           paths:
             - x-api.tar.gz
             - docker-compose.yml
+            - config/loki-config.yaml
+            - config/prometheus.yml
+            - config/promtail-config.yaml
   push-docker-image:
     executor:
       name: docker/docker
