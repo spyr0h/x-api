@@ -2,6 +2,8 @@ using API.Page.DependencyInjection;
 using API.Paging.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using Prometheus;
+using Serilog;
+using Serilog.Sinks.Grafana.Loki;
 using XApi.API.Autocomplete.Endpoints;
 using XApi.API.Categories.DependencyInjection;
 using XApi.API.DependencyInjection;
@@ -16,6 +18,11 @@ using XApi.API.Tags.DependencyInjection;
 using XApi.API.Tags.Endpoints;
 
 var builder = WebApplication.CreateBuilder(args);
+
+Log.Logger = new LoggerConfiguration()
+    .WriteTo.Console()
+    .WriteTo.GrafanaLoki("http://loki:3100")
+    .CreateLogger();
 
 builder.Services.AddCors(options =>
 {
@@ -96,3 +103,5 @@ app.MapAutocompleteEndpoints();
 #endregion
 
 app.Run();
+
+Log.Information("Starting application");

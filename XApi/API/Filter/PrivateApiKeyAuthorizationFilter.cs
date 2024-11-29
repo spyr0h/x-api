@@ -1,4 +1,6 @@
-﻿namespace XApi.API.Filter;
+﻿using Serilog;
+
+namespace XApi.API.Filter;
 
 public class PrivateApiKeyAuthorizationFilter : IEndpointFilter
 {
@@ -15,6 +17,7 @@ public class PrivateApiKeyAuthorizationFilter : IEndpointFilter
             !context.HttpContext.Request.Headers.TryGetValue("Authorization", out var providedApiKey) ||
             !string.Equals(providedApiKey, $"Bearer {_apiKey}", StringComparison.Ordinal))
         {
+            Log.Error("Unauthorized");
             return Results.Unauthorized();
         }
 
