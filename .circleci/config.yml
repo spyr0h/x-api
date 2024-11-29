@@ -47,7 +47,7 @@ jobs:
             echo "Starting pushing docker image & config to VPS"
             scp -oStrictHostKeyChecking=no XApi/x-api.tar.gz $SSHUSER@$SSHHOST:~/
             scp -oStrictHostKeyChecking=no XApi/docker-compose.yml $SSHUSER@$SSHHOST:~/
-            scp -r -oStrictHostKeyChecking=no XApi/config $SSHUSER@$SSHHOST:~/
+            scp -oStrictHostKeyChecking=no XApi/config/* $SSHUSER@$SSHHOST:~/config/
             echo "Docker image & config pushed to VPS"
             ssh -oStrictHostKeyChecking=no $SSHUSER@$SSHHOST 'gzip -f -d ~/x-api.tar.gz'
             echo "Docker image unzipped"
