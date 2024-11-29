@@ -30,3 +30,5 @@ storage_config:
 
 compactor:
   working_directory: /data/loki/compactor
+
+ring: false
