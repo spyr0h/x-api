@@ -15,6 +15,7 @@ services:
     command: -config.file=/etc/loki/local-config.yaml
     volumes:
       - ./loki-config.yaml:/etc/loki/local-config.yaml
+      - ./data/loki:/data/loki
   
   promtail:
     image: grafana/promtail:latest
