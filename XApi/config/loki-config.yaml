@@ -3,21 +3,39 @@ auth_enabled: false
 server:
   http_listen_port: 3100
 
-ingester:
-  lifecycler:
-    ring:
-      kvstore:
-        store: inmemory
-      replication_factor: 1
-  chunk_idle_period: 5m
-  chunk_target_size: 1048576
+common:
+  path_prefix: /data/loki
+  storage:
+    filesystem:
+      chunks_directory: /data/loki/chunks
+      rules_directory: /data/loki/rules
+  replication_factor: 1
+
+limits_config:
+  allow_structured_metadata: true
+  ingestion_rate_mb: 10
+  max_global_streams_per_user: 10000
 
 schema_config:
   configs:
-    - from: 2020-10-24
-      store: boltdb-shipper
+    - from: 2023-01-01
+      store: tsdb
       object_store: filesystem
-      schema: v11
+      schema: v13
       index:
-        prefix: index_
+        prefix: loki_index_
         period: 24h
+
+storage_config:
+  tsdb:
+    dir: /data/loki/tsdb
+  boltdb_shipper:
+    shared_store: filesystemv
+
+compactor:
+  working_directory: /data/loki/compactor
+  shared_store: filesystem
+
+table_manager:
+  retention_deletes_enabled: true
+  retention_period: 336h # 14 days
