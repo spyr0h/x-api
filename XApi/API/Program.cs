@@ -85,6 +85,7 @@ app.UseCors("AllowAll");
 
 app.UseHttpsRedirection();
 
+
 #region Custom endpoints registration
 app.MapMetrics();
 app.MapTagEndpoints();
