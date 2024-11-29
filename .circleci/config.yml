@@ -63,7 +63,7 @@ jobs:
       - run:
           name: Docker compose up
           command: |
-            ssh -oStrictHostKeyChecking=no $SSHUSER@$SSHHOST 'docker compose up -d'
+            ssh -oStrictHostKeyChecking=no $SSHUSER@$SSHHOST 'GF_ADMIN=$GF_ADMIN docker compose up -d'
 
 workflows:
   build-and-deploy:

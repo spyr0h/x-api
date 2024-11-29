@@ -1,6 +1,7 @@
 using API.Page.DependencyInjection;
 using API.Paging.DependencyInjection;
 using Microsoft.OpenApi.Models;
+using Prometheus;
 using XApi.API.Autocomplete.Endpoints;
 using XApi.API.Categories.DependencyInjection;
 using XApi.API.DependencyInjection;
@@ -85,6 +86,7 @@ app.UseCors("AllowAll");
 app.UseHttpsRedirection();
 
 #region Custom endpoints registration
+app.MapMetrics();
 app.MapTagEndpoints();
 app.MapPornstarEndpoints();
 app.MapSearchEndpoints();
