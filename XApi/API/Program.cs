@@ -17,97 +17,101 @@ using XApi.API.Suggestion.DependencyInjection;
 using XApi.API.Tags.DependencyInjection;
 using XApi.API.Tags.Endpoints;
 
-var builder = WebApplication.CreateBuilder(args);
-
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()
     .WriteTo.GrafanaLoki("http://loki:3100", labels: new List<LokiLabel>
     {
-        new() {
-            Key = "app",
-            Value = "x-api"
-        }
+        new LokiLabel { Key = "app", Value = "x-api" },
+        new LokiLabel { Key = "env", Value = "production" }
     })
     .CreateLogger();
 
-builder.Services.AddCors(options =>
+try
 {
-    // TODO : be more strict
-    options.AddPolicy("AllowAll",
-        policy =>
+    Log.Information("Starting application");
+
+    var builder = WebApplication.CreateBuilder(args);
+
+    builder.Services.AddCors(options =>
+    {
+        // TODO : be more strict
+        options.AddPolicy("AllowAll",
+            policy =>
+            {
+                policy.AllowAnyOrigin()
+                      .AllowAnyHeader()
+                      .AllowAnyMethod();
+            });
+    });
+
+    builder.Services.AddEndpointsApiExplorer();
+    builder.Services.AddSwaggerGen(options =>
+    {
+        options.AddSecurityDefinition("ApiKey", new OpenApiSecurityScheme
         {
-            policy.AllowAnyOrigin()
-                  .AllowAnyHeader()
-                  .AllowAnyMethod();
+            Description = "Clé API pour l'autorisation. Utilisez le format 'Bearer {votre-clé-api}'.",
+            Name = "Authorization",
+            In = ParameterLocation.Header,
+            Type = SecuritySchemeType.ApiKey,
+            Scheme = "ApiKey"
+        });
+
+        options.AddSecurityRequirement(new OpenApiSecurityRequirement
+        {
+            {
+                new OpenApiSecurityScheme
+                {
+                    Reference = new OpenApiReference
+                    {
+                        Type = ReferenceType.SecurityScheme,
+                        Id = "ApiKey"
+                    },
+                    In = ParameterLocation.Header
+                },
+                new List<string>()
+            }
         });
     });
 
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(options =>
-{
-    options.AddSecurityDefinition("ApiKey", new OpenApiSecurityScheme
-    {
-        Description = "Clé API pour l'autorisation. Utilisez le format 'Bearer {votre-clé-api}'.",
-        Name = "Authorization",
-        In = ParameterLocation.Header,
-        Type = SecuritySchemeType.ApiKey,
-        Scheme = "ApiKey"
-    });
+    #region Custom dependencies DI
+    builder.Services.AddMapster();
+    builder.Services.AddMemoryCache();
+    builder.Services.AddTagsDependencies();
+    builder.Services.AddCategoriesDependencies();
+    builder.Services.AddPornstarsDependencies();
+    builder.Services.AddSearchDependencies();
+    builder.Services.AddSeoDependencies();
+    builder.Services.AddPagingsDependencies();
+    builder.Services.AddPagesDependencies();
+    builder.Services.AddLinkboxesDependencies();
+    builder.Services.AddVideoDependencies();
+    builder.Services.AddSuggestionDependencies();
+    #endregion
 
-    options.AddSecurityRequirement(new OpenApiSecurityRequirement
-    {
-        {
-            new OpenApiSecurityScheme
-            {
-                Reference = new OpenApiReference
-                {
-                    Type = ReferenceType.SecurityScheme,
-                    Id = "ApiKey"
-                },
-                In = ParameterLocation.Header
-            },
-            new List<string>()
-        }
-    });
-});
+    var app = builder.Build();
 
-#region Custom dependencies DI
-builder.Services.AddMapster();
-builder.Services.AddMemoryCache();
-builder.Services.AddTagsDependencies();
-builder.Services.AddCategoriesDependencies();
-builder.Services.AddPornstarsDependencies();
-builder.Services.AddSearchDependencies();
-builder.Services.AddSeoDependencies();
-builder.Services.AddPagingsDependencies();
-builder.Services.AddPagesDependencies();
-builder.Services.AddLinkboxesDependencies();
-builder.Services.AddVideoDependencies();
-builder.Services.AddSuggestionDependencies();
-#endregion
-
-var app = builder.Build();
-
-//if (app.Environment.IsDevelopment())
-//{
     app.UseSwagger();
     app.UseSwaggerUI();
-//}
 
-app.UseCors("AllowAll");
+    app.UseCors("AllowAll");
+    app.UseHttpsRedirection();
 
-app.UseHttpsRedirection();
+    #region Custom endpoints registration
+    app.MapMetrics();
+    app.MapTagEndpoints();
+    app.MapPornstarEndpoints();
+    app.MapSearchEndpoints();
+    app.MapPageEndpoints();
+    app.MapAutocompleteEndpoints();
+    #endregion
 
-
-#region Custom endpoints registration
-app.MapMetrics();
-app.MapTagEndpoints();
-app.MapPornstarEndpoints();
-app.MapSearchEndpoints();
-app.MapPageEndpoints();
-app.MapAutocompleteEndpoints();
-#endregion
-
-app.Run();
-
-Log.Information("Starting application");
+    app.Run();
+}
+catch (Exception ex)
+{
+    Log.Fatal(ex, "Application terminated unexpectedly");
+}
+finally
+{
+    Log.CloseAndFlush();
+}
