@@ -21,7 +21,13 @@ var builder = WebApplication.CreateBuilder(args);
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()
-    .WriteTo.GrafanaLoki("http://loki:3100")
+    .WriteTo.GrafanaLoki("http://loki:3100", labels: new List<LokiLabel>
+    {
+        new() {
+            Key = "app",
+            Value = "x-api"
+        }
+    })
     .CreateLogger();
 
 builder.Services.AddCors(options =>
