@@ -96,8 +96,11 @@ try
     app.UseCors("AllowAll");
     app.UseHttpsRedirection();
 
+    // Prometheus metrics middleware
+    app.UseMetricServer(); // Exposes /metrics endpoint
+    app.UseHttpMetrics(); // Adds HTTP request metrics automatically
+
     #region Custom endpoints registration
-    app.MapMetrics();
     app.MapTagEndpoints();
     app.MapPornstarEndpoints();
     app.MapSearchEndpoints();
