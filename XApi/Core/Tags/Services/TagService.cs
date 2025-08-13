@@ -7,6 +7,9 @@ namespace XApi.Core.Tags.Services;
 
 public class TagService(ITagProvider tagProvider) : ITagService
 {
+    public Task<IList<Tag>> ProvideAllTags()
+        => tagProvider.ProvideAllTags();
+
     public async Task<IList<Tag>> Autocomplete(TagAutocomplete autocomplete)
     {
         if (string.IsNullOrEmpty(autocomplete.Value)) return [];

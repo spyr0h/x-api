@@ -1,4 +1,5 @@
-﻿using XApi.Core.Page.Ports.Interfaces;
+﻿using XApi.Core.Page.Enums;
+using XApi.Core.Page.Ports.Interfaces;
 using XApi.Core.Search.Models;
 using XApi.Core.Seo.Builders.Interfaces;
 using XApi.Core.Seo.Models;
@@ -36,6 +37,18 @@ public class SeoService(
             Headline = video.Title,
             Canonical = "canonical-url",
             IsIndexed = false
+        };
+    }
+
+    public SeoData ProvideSeoData(ListPageType listPageType)
+    {
+        return new()
+        {
+            Title = listPageType == ListPageType.Category ? "All categories" : "All actresses and actors",
+            Description = listPageType == ListPageType.Category ? "All categories" : "All actresses and actors",
+            Headline = listPageType == ListPageType.Category ? "All categories" : "All actresses and actors",
+            Canonical = "canonical-url",
+            IsIndexed = true
         };
     }
 }

@@ -101,11 +101,12 @@ try
     app.UseHttpMetrics(); // Adds HTTP request metrics automatically
 
     #region Custom endpoints registration
-    app.MapTagEndpoints();
-    app.MapPornstarEndpoints();
-    app.MapSearchEndpoints();
+    //app.MapTagEndpoints();
+    //app.MapPornstarEndpoints();
+    //app.MapSearchEndpoints();
     app.MapPageEndpoints();
     app.MapAutocompleteEndpoints();
+
     #endregion
 
     app.Run();

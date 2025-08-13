@@ -2,6 +2,7 @@
 using XApi.Core.Linkbox.Enums;
 using XApi.Core.Linkbox.Models;
 using XApi.Core.Linkbox.Ports.Interfaces;
+using XApi.Core.Page.Enums;
 using XApi.Core.Page.Ports.Interfaces;
 using XApi.Core.Pornstars.Ports.Interfaces;
 using XApi.Core.Search.Models;
@@ -12,40 +13,58 @@ namespace XApi.Core.Linkbox.Services;
 public class LinkboxService(IPageLinkProvider pageLinkProvider, ICategoryService categoryService, IPornstarService pornstarService) : ILinkboxService
 {
     public async Task<Models.Linkbox[]> ProvideLinkboxes(SearchCriteria criteria)
-     => [
-            new Models.Linkbox
-            {
-                Title = "Categories",
-                Category = LinkboxCategory.CategoriesLinkbox,
-                Order = 1,
-                Links = await GetCategoriesLinks()
-            },
-            new Models.Linkbox
-            {
-                Title = "Pornstars",
-                Category = LinkboxCategory.PornstarsLinkbox,
-                Order = 2,
-                Links = await GetPornstarsLinks()
-            }
-        ];
+         => [
+                new Models.Linkbox
+                {
+                    Title = "Categories",
+                    Category = LinkboxCategory.CategoriesLinkbox,
+                    Order = 1,
+                    Links = await GetCategoriesLinks()
+                },
+                new Models.Linkbox
+                {
+                    Title = "Pornstars",
+                    Category = LinkboxCategory.PornstarsLinkbox,
+                    Order = 2,
+                    Links = await GetPornstarsLinks()
+                }
+            ];
 
     public async Task<Models.Linkbox[]> ProvideLinkboxes(Video video)
-    => [
-            new Models.Linkbox
-            {
-                Title = "Categories",
-                Category = LinkboxCategory.CategoriesLinkbox,
-                Order = 1,
-                Links = await GetCategoriesLinks()
-            },
-            new Models.Linkbox
-            {
-                Title = "Pornstars",
-                Category = LinkboxCategory.PornstarsLinkbox,
-                Order = 2,
-                Links = await GetPornstarsLinks()
-            }
-        ];
+        => [
+                new Models.Linkbox
+                {
+                    Title = "Categories",
+                    Category = LinkboxCategory.CategoriesLinkbox,
+                    Order = 1,
+                    Links = await GetCategoriesLinks()
+                },
+                new Models.Linkbox
+                {
+                    Title = "Pornstars",
+                    Category = LinkboxCategory.PornstarsLinkbox,
+                    Order = 2,
+                    Links = await GetPornstarsLinks()
+                }
+            ];
+
+    public async Task<Models.Linkbox[]> ProvideLinkboxes(ListPageType listPageType)
+        => [
+                new Models.Linkbox
+                {
+                    Title = "Categories",
+                    Category = LinkboxCategory.CategoriesLinkbox,
+                    Order = 1,
+                    Links = await GetCategoriesLinks()
+                },
+                new Models.Linkbox
+                {
+                    Title = "Pornstars",
+                    Category = LinkboxCategory.PornstarsLinkbox,
+                    Order = 2,
+                    Links = await GetPornstarsLinks()
+                }
+            ];
 
     private async Task<LinkboxLink[]> GetCategoriesLinks()
     {
