@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using XApi.Core.Page.Ports.Interfaces;
 using XApi.Core.Suggestion.Enums;
 using XApi.Core.Suggestion.Models;
 using XApi.Core.Suggestion.Ports.Interfaces;
@@ -6,7 +7,9 @@ using XApi.Core.Videos.Models;
 
 namespace XApi.Core.Suggestion.Services;
 
-public class SuggestionService(ISuggestionProvider suggestionProvider) : ISuggestionService
+public class SuggestionService(
+    ISuggestionProvider suggestionProvider, 
+    IPageLinkProvider pageLinkProvider) : ISuggestionService
 {
     private readonly int _suggestedMaxNumber = 30;
     private readonly int _suggestedPornstarMaxNumber = 10;
@@ -17,6 +20,7 @@ public class SuggestionService(ISuggestionProvider suggestionProvider) : ISugges
     {
         var suggestedVideos = (await suggestionProvider.ProvideSuggestedVideos(video))
             .Where(suggestedVideo => suggestedVideo.ID != video.ID)
+            .Select(suggestedVideo => suggestedVideo with { Url = pageLinkProvider.ProvidePageLink(suggestedVideo)!.Url })
             .ToArray();
 
         if (suggestedVideos == null) return [];
