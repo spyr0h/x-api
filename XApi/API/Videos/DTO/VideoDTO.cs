@@ -14,6 +14,7 @@ public record VideoDTO
     public TimeSpan? Duration { get; set; }
     public int? Year { get; set; }
     public bool New { get; set; }
+    public string? Url { get; set; }
     public List<TagDTO> Tags { get; set; } = [];
     public List<CategoryDTO> Categories { get; set; } = [];
     public List<PornstarDTO> Pornstars { get; set; } = [];

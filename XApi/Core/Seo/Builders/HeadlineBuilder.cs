@@ -13,8 +13,8 @@ public class HeadlineBuilder : IHeadLineBuilder
         var tagRepresentation = string.Join(' ', criteria.Tags.Select(t => t.Value) ?? []).CapitalizeFirstLetter();
         tagRepresentation = string.IsNullOrEmpty(tagRepresentation) ? string.Empty : $"{tagRepresentation} ";
         var pornstarRepresentation = string.Join(", ", criteria.Pornstars.Select(p => p.Value?.CapitalizeFirstLetterOfEachWord() ?? "") ?? []);
-        pornstarRepresentation = string.IsNullOrEmpty(pornstarRepresentation) ? string.Empty : $" of {pornstarRepresentation}";
+        pornstarRepresentation = string.IsNullOrEmpty(pornstarRepresentation) ? string.Empty : $" featuring {pornstarRepresentation}";
 
-        return $"{(searchResult.GlobalCount == 0 ? string.Empty : searchResult.GlobalCount)} {catRepresentation}{tagRepresentation}Porn Videos{pornstarRepresentation}";
+        return $"{(searchResult.GlobalCount == 0 ? string.Empty : searchResult.GlobalCount)} {catRepresentation}{tagRepresentation}Free Porn Videos{pornstarRepresentation}";
     }
 }

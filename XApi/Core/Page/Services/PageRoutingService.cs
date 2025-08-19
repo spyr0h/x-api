@@ -6,10 +6,6 @@ using XApi.Core.Search.Models;
 using XApi.Core.Tags.Ports.Interfaces;
 using XApi.Core.Page.Exceptions;
 using XApi.Core.Categories.Ports.Interfaces;
-using XApi.Core.Pornstars.Models;
-using XApi.Core.Tags.Models;
-using System.Text.Json.Serialization;
-using System.Text.Json;
 using XApi.Core.Search.Enums;
 
 namespace XApi.Core.Page.Services;

@@ -22,8 +22,8 @@ public class SeoService(
             Title = titleBuilder.BuildFrom(searchCriteria, searchResult),
             Description = descriptionBuilder.BuildFrom(searchCriteria, searchResult),
             Headline = headLineBuilder.BuildFrom(searchCriteria, searchResult),
-            Canonical = pageLinkProvider.ProvidePageLink(searchCriteria).Url,
-            IsIndexed = true,
+            Canonical = pageLinkProvider.ProvidePageLink(searchCriteria with { Paging = searchCriteria.Paging with { PageIndex = 1 } })!.Url,
+            IsIndexed = GetSerpIndexation(searchCriteria.Terms, searchCriteria.Paging.PageIndex),
             RecentCount = searchResult.RecentCount
         };
     }
@@ -35,7 +35,7 @@ public class SeoService(
             Title = video.Title,
             Description = video.Title,
             Headline = video.Title,
-            Canonical = "canonical-url",
+            Canonical = pageLinkProvider.ProvidePageLink(video)!.Url,
             IsIndexed = false
         };
     }
@@ -47,8 +47,12 @@ public class SeoService(
             Title = listPageType == ListPageType.Category ? "All categories" : "All actresses and actors",
             Description = listPageType == ListPageType.Category ? "All categories" : "All actresses and actors",
             Headline = listPageType == ListPageType.Category ? "All categories" : "All actresses and actors",
-            Canonical = "canonical-url",
+            Canonical = listPageType == ListPageType.Category ? "/categories" : "/pornstars",
             IsIndexed = true
         };
     }
+
+    private bool GetSerpIndexation(string? terms, int? page)
+        => string.IsNullOrEmpty(terms) && page == 1;
+
 }

@@ -10,6 +10,7 @@ using XApi.Core.Categories.Ports.Interfaces;
 using XApi.Core.Page.Ports.Interfaces;
 using XApi.Core.Pornstars.Models;
 using XApi.Core.Pornstars.Ports.Interfaces;
+using XApi.Core.Search.Models;
 using XApi.Core.Tags.Models;
 using XApi.Core.Tags.Ports.Interfaces;
 
@@ -38,19 +39,19 @@ public static class AutocompleteEndpointsMappingExtensions
                 {
                     Value = category.Count == 0 ? category.Value : $"{category.Value} ({category.Count})",
                     Type = SuggestionType.Category,
-                    SearchUrl = pageLinkProvider.ProvidePageLink(new() { Categories = [ category ] })?.Url ?? string.Empty
+                    SearchUrl = pageLinkProvider.ProvidePageLink(new SearchCriteria() { Categories = [ category ] })?.Url ?? string.Empty
                 }).Take(3),
                 .. tags.Result.OrderByDescending(t => t.Count).ThenBy(t => t.Value).Select(tag => new SuggestionDTO
                 { 
                     Value = tag.Count == 0 ? tag.Value : $"{tag.Value} ({tag.Count})",
                     Type = SuggestionType.Tag,
-                    SearchUrl = pageLinkProvider.ProvidePageLink(new() { Tags = [ tag ] })?.Url ?? string.Empty
+                    SearchUrl = pageLinkProvider.ProvidePageLink(new SearchCriteria() { Tags = [ tag ] })?.Url ?? string.Empty
                 }).Take(3),
                 .. pornstars.Result.OrderByDescending(p => p.Count).ThenBy(p => p.Value).Select(pornstar => new SuggestionDTO
                 {
                     Value = pornstar.Count == 0 ? pornstar.Value : $"{pornstar.Value} ({pornstar.Count})",
                     Type = SuggestionType.Pornstar,
-                    SearchUrl = pageLinkProvider.ProvidePageLink(new() { Pornstars = [pornstar] })?.Url ?? string.Empty
+                    SearchUrl = pageLinkProvider.ProvidePageLink(new SearchCriteria() { Pornstars = [pornstar] })?.Url ?? string.Empty
                 }).Take(3),
             ];
 

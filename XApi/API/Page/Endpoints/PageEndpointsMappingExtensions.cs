@@ -123,14 +123,14 @@ public static class PageEndpointsMappingExtensions
             [
                 .. categoriesTask.Result.Select(category => new PageLinkExtendedDTO
                 {
-                    Url = pageLinkProvider.ProvidePageLink(new() { Categories = [category] })?.Url ?? string.Empty,
+                    Url = pageLinkProvider.ProvidePageLink(new SearchCriteria() { Categories = [category] })?.Url ?? string.Empty,
                     LinkText = category.Value,
                     Count = category.Count,
                     RecentCount = category.RecentCount
                 }),
                 .. tagsTask.Result.Select(tag => new PageLinkExtendedDTO
                 {
-                    Url = pageLinkProvider.ProvidePageLink(new() { Tags = [tag] })?.Url ?? string.Empty,
+                    Url = pageLinkProvider.ProvidePageLink(new SearchCriteria() { Tags = [tag] })?.Url ?? string.Empty,
                     LinkText = tag.Value,
                     Count = tag.Count,
                     RecentCount = tag.RecentCount
@@ -163,7 +163,7 @@ public static class PageEndpointsMappingExtensions
             [
                 .. pornstarsTask.Select(pornstar => new PageLinkExtendedDTO
                 {
-                    Url = pageLinkProvider.ProvidePageLink(new() { Pornstars = [pornstar] })?.Url ?? string.Empty,
+                    Url = pageLinkProvider.ProvidePageLink(new SearchCriteria() { Pornstars = [pornstar] })?.Url ?? string.Empty,
                     LinkText = pornstar.Value,
                     Count = pornstar.Count,
                     RecentCount = pornstar.RecentCount
